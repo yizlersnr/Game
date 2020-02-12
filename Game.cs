@@ -31,12 +31,8 @@ namespace ConsoleApp2
         private bool focused = true;
 
         private readonly Text text = new Text();
-        //private readonly Shape shape1 = new Shape();
-        //private readonly Shape shape2 = new Shape(-0.9f, 0.8f, 0.2f, 0.1f);
 
-
-
-
+        private readonly Button show = new Button(new Vector2(-0.75f, 1.0f), new Vector2(0.75f, 1.0f), false);
 
 
         // We create a double to hold how long has passed since the program was opened.
@@ -85,7 +81,7 @@ namespace ConsoleApp2
 
 
             //Code goes here
-            CursorVisible = false;
+            //CursorVisible = false;
 
             base.OnLoad(e);
         }
@@ -231,7 +227,6 @@ namespace ConsoleApp2
             camera._front.Z = (float)Math.Cos(MathHelper.DegreesToRadians(camera.Pitch)) * (float)Math.Sin(MathHelper.DegreesToRadians(camera.Yaw));
             camera._front = Vector3.Normalize(camera._front);
 
-           
 
             base.OnUpdateFrame(e);
         }
@@ -240,7 +235,8 @@ namespace ConsoleApp2
         {
             if (focused) // check to see if the window is focused  
             {
-                Mouse.SetPosition(X + Width / 2f, Y + Height / 2f);
+                //Mouse.SetPosition(X + Width / 2f, Y + Height / 2f);
+                show.MouseLocation();
             }
 
             base.OnMouseMove(e);
