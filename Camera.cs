@@ -1,18 +1,28 @@
-﻿using OpenTK;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using OpenTK;
+
 
 namespace ConsoleApp2
 {
+    // This is the camera class as it could be set up after the tutorials on the website
+    // It is important to note there are a few ways you could have set up this camera, for example
+    // you could have also managed the player input inside the camera class, and a lot of the properties could have
+    // been made into functions.
+
+    // TL;DR: This is just one of many ways in which we could have set up the camera
+    // Check out the web version if you don't know why we are doing a specific thing or want to know more about the code
     public class Camera
     {
         // Those vectors are directions pointing outwards from the camera to define how it rotated
-        private Vector3 _front = -Vector3.UnitZ;
-        private Vector3 _up = Vector3.UnitY;
-        private Vector3 _right = Vector3.UnitX;
+        public Vector3 _front = -Vector3.UnitZ;
+        public Vector3 _up = Vector3.UnitY;
+        public Vector3 _right = Vector3.UnitX;
+        public float Sensitivity = 0.1f;
+                      
 
         // Rotation around the X axis (radians)
         private float _pitch;
@@ -21,7 +31,7 @@ namespace ConsoleApp2
         private float _yaw = -MathHelper.PiOver2; // Without this you would be started rotated 90 degrees right
 
         // The field of view of the camera (radians)
-        private float _fov = MathHelper.PiOver2;
+        public float _fov = MathHelper.PiOver2;
 
         public Camera(Vector3 position, float aspectRatio)
         {
@@ -33,7 +43,7 @@ namespace ConsoleApp2
         public Vector3 Position { get; set; }
 
         // This is simply the aspect ratio of the viewport, used for the projection matrix
-        public float AspectRatio { private get; set; }
+        public float AspectRatio { get; set; }
 
         public Vector3 Front => _front;
 
@@ -89,7 +99,7 @@ namespace ConsoleApp2
         // Get the projection matrix using the same method we have used up until this point
         public Matrix4 GetProjectionMatrix()
         {
-            return Matrix4.CreatePerspectiveFieldOfView(_fov, AspectRatio, 0.01f, 100f);
+            return Matrix4.CreatePerspectiveFieldOfView(_fov, AspectRatio, 0.01f, 5000f);
         }
 
         // This function is going to update the direction vertices using some of the math learned in the web tutorials

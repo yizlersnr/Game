@@ -22,12 +22,19 @@ namespace ConsoleApp2
         //private readonly Shader shader;
         private readonly Triangle triangle = new Triangle();
         private readonly Square square = new Square();
-        //private readonly Square square2 = new Square();
+        private readonly Square square2 = new Square();
         private readonly Shape shape = new Shape();
 
-        //private readonly Text text = new Text();
+        private Camera camera;
+        private Vector2 lastPos;
+        private bool firstMove = true;
+        private bool focused = true;
+
+        private readonly Text text = new Text();
         //private readonly Shape shape1 = new Shape();
         //private readonly Shape shape2 = new Shape(-0.9f, 0.8f, 0.2f, 0.1f);
+
+
 
 
 
@@ -53,25 +60,32 @@ namespace ConsoleApp2
             GL.ClearColor(0.0f, 0.0f, 0.0f, 0.5f);
 
 
-            //text.show();
+            text.Show("Money");
 
 
             triangle.load();
             square.load(_width, _height);
-            //square2.load(_width, _height);
+            square2.load(_width, _height);
 
             shape.load(_width, _height);
+
+
+            camera = new Camera(new Vector3(0.0f, 0.0f, 9.0f), _width / _height)
+            {
+                Fov = 45.0f,
+                AspectRatio = _width / _height
+            };
+
             //shape1.load(_width, _height);
             //shape2.load(_width, _height);
 
-            //view = Matrix4.CreateTranslation(0.0f, 5.0f, -3.0f);
-            //projection = Matrix4.CreatePerspectiveFieldOfView(MathHelper.DegreesToRadians(45f), Width / (float)Height, 0.1f, 100.0f);
+            view = Matrix4.CreateTranslation(0.0f, 5.0f, -3.0f);
+            projection = Matrix4.CreatePerspectiveFieldOfView(MathHelper.DegreesToRadians(45f), Width / (float)Height, 0.1f, 100.0f);
 
-            
 
-         
 
             //Code goes here
+            CursorVisible = false;
 
             base.OnLoad(e);
         }
@@ -81,7 +95,7 @@ namespace ConsoleApp2
 
             triangle.unload();
             square.unload();
-            //square2.unload();
+            square2.unload();
 
             shape.unload();
             //shape1.unload();
@@ -137,11 +151,125 @@ namespace ConsoleApp2
 
             if (input.IsKeyDown(Key.B))
             {
-                square.update();
+                square.Update(camera.Position);
             }
 
 
+            // Camera
+            // Keyboard
+
+            float speed = 155.0f;
+
+            if (camera.Position.Y < 12.0f)
+            {
+                //camera.Position += new Vector3(0.0f,12.0f,0.0f);
+            }
+
+            if (input.IsKeyDown(Key.I))
+            {
+                camera.Position += camera.Front * speed * (float)e.Time; //Forward 
+            }
+
+            if (input.IsKeyDown(Key.K))
+            {
+                camera.Position -= camera.Front * speed * (float)e.Time; //Backwards
+            }
+
+            if (input.IsKeyDown(Key.J))
+            {
+                camera.Position -= Vector3.Normalize(Vector3.Cross(camera.Front, camera.Up)) * speed * (float)e.Time; //Left
+            }
+
+            if (input.IsKeyDown(Key.L))
+            {
+                camera.Position += Vector3.Normalize(Vector3.Cross(camera.Front, camera.Up)) * speed * (float)e.Time; //Right
+            }
+
+            if (input.IsKeyDown(Key.Space))
+            {
+                camera.Position += camera.Up * speed * (float)e.Time; //Up 
+            }
+
+            if (input.IsKeyDown(Key.LShift))
+            {
+                camera.Position -= camera.Up * speed * (float)e.Time; //Down
+            }
+
+        
+
+            // Camera
+            // Mouse
+
+            if (firstMove)
+            {
+                lastPos = new Vector2(Mouse.GetState().X, Mouse.GetState().Y);
+                firstMove = false;
+            }
+            else
+            {
+                float deltaX = Mouse.GetState().X - lastPos.X;
+                float deltaY = Mouse.GetState().Y - lastPos.Y;
+                lastPos = new Vector2(Mouse.GetState().X, Mouse.GetState().Y);
+
+                camera.Yaw += deltaX * camera.Sensitivity;
+                if (camera.Pitch > 89.0f)
+                {
+                    camera.Pitch = 89.0f;
+                }
+                else if (camera.Pitch < -89.0f)
+                {
+                    camera.Pitch = -89.0f;
+                }
+                else
+                {
+                    camera.Pitch -= deltaY * camera.Sensitivity;
+                }
+            }
+
+            camera._front.X = (float)Math.Cos(MathHelper.DegreesToRadians(camera.Pitch)) * (float)Math.Cos(MathHelper.DegreesToRadians(camera.Yaw));
+            camera._front.Y = (float)Math.Sin(MathHelper.DegreesToRadians(camera.Pitch));
+            camera._front.Z = (float)Math.Cos(MathHelper.DegreesToRadians(camera.Pitch)) * (float)Math.Sin(MathHelper.DegreesToRadians(camera.Yaw));
+            camera._front = Vector3.Normalize(camera._front);
+
+           
+
             base.OnUpdateFrame(e);
+        }
+
+        protected override void OnMouseMove(MouseMoveEventArgs e)
+        {
+            if (focused) // check to see if the window is focused  
+            {
+                Mouse.SetPosition(X + Width / 2f, Y + Height / 2f);
+            }
+
+            base.OnMouseMove(e);
+        }
+
+        protected override void OnMouseWheel(MouseWheelEventArgs e)
+        {
+            //if (camera._fov >= 45.0f)
+            //{
+            //    camera._fov = 45.0f;
+            //    //Console.WriteLine(camera.Fov);
+            //    //Console.WriteLine(camera._fov);
+            //}
+            //else if (camera._fov <= 1.0f)
+            //{
+            //    camera._fov = 1.0f;
+            //   // Console.WriteLine(camera.Fov);
+            //}
+            //else
+            //{
+            //    camera.Fov = Mouse.GetState().WheelPrecise;
+            //    //Console.WriteLine(camera.Fov);
+
+            //}
+
+            camera.Fov = Mouse.GetState().WheelPrecise;
+            Console.WriteLine(camera.Fov);
+
+            base.OnMouseWheel(e);
         }
 
         protected override void OnRenderFrame(FrameEventArgs e)
@@ -152,13 +280,13 @@ namespace ConsoleApp2
 
             
 
-            shape.draw();
+            shape.Draw(camera);
             //shape1.draw();
             //shape2.draw();
 
-           // triangle.draw();
-            square.draw();
-            //square.draw();
+            //triangle.draw();
+            square.Draw(-0.6f,camera);
+            square2.Draw(1f,camera);
 
             Context.SwapBuffers();
             base.OnRenderFrame(e);

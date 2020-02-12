@@ -19,25 +19,23 @@ namespace ConsoleApp2
 {
     class Text
     {
-        FontFamily Wendy_One2;
-
+        
+        
 
         public Text()
         {
-            FontCollection font = new FontCollection();
-            FontFamily Wendy_One2 = font.Install("WendyOne-Regular.ttf");
-
+            
         }
 
-        public void show(string name)
+        public void Show(string name)
         {
 
-            //FontCollection fonts = new FontCollection();
+            FontCollection fonts = new FontCollection();
             //FontFamily font = fonts.Install(@"SixLaborsSampleAB.ttf");
             //FontFamily fontWoff = fonts.Install(@"SixLaborsSampleAB.woff");
             //FontFamily font2 = fonts.Install("OpenSans-Regular.ttf");
             //FontFamily carter = fonts.Install("CarterOne.ttf");
-            //FontFamily Wendy_One = fonts.Install("WendyOne-Regular.ttf");
+            FontFamily Wendy_One = fonts.Install("WendyOne-Regular.ttf");
 
             //RenderText(font, "abc", 72);
             //RenderText(font, "ABd", 72);
@@ -73,9 +71,7 @@ namespace ConsoleApp2
             //RenderText(new Font(SystemFonts.Find("Arial"), 20f, FontStyle.Regular), "á é í ó ú ç ã õ", 200, 50);
             //RenderText(new Font(Wendy_One, 50f, FontStyle.BoldItalic), "67", 400, 100);
             //RenderText(new Font(font2, 10f, FontStyle.Regular), "Hello", 200, 50);
-
-            //RenderText(new Font(Wendy_One, 60f, FontStyle.Italic), name, 300, 80);
-            RenderText(new Font(SystemFonts.Find("Arial"), 60f, FontStyle.Regular), name, 300, 80);
+            RenderText(new Font(Wendy_One, 30f, FontStyle.Italic), name, 320, 80);
 
             //RenderText(new RendererOptions(SystemFonts.CreateFont("consolas", 72)) { TabWidth = 4 }, "xxxxxxxxxxxxxxxx\n\txxxx\txxxx\n\t\txxxxxxxx\n\t\t\txxxx");
 
@@ -107,7 +103,7 @@ namespace ConsoleApp2
 
         public static void RenderText(Font font, string text, int width, int height)
         {
-            string path = System.IO.Path.GetInvalidFileNameChars().Aggregate("me", (x, c) => x.Replace($"{c}", "-"));
+            string path = System.IO.Path.GetInvalidFileNameChars().Aggregate("you", (x, c) => x.Replace($"{c}", "-"));
             string fullPath = System.IO.Path.GetFullPath(System.IO.Path.Combine("Output", System.IO.Path.Combine(path)));
 
             using (var img = new Image<Rgba32>(width, height))
@@ -115,10 +111,10 @@ namespace ConsoleApp2
                 img.Mutate(x => x.Fill(Rgba32.Black));
 
                 IPathCollection shapes = TextBuilder.GenerateGlyphs(text, new Vector2(50f, 4f), new RendererOptions(font, 72));
-                img.Mutate(x => x.Fill(Rgba32.White, shapes));
+                img.Mutate(x => x.Fill(Rgba32.Red, shapes));
 
                 Directory.CreateDirectory(System.IO.Path.GetDirectoryName(fullPath));
-                
+
                 using (FileStream fs = File.Create(fullPath + ".png"))
                 {
                     img.SaveAsPng(fs);

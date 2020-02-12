@@ -40,16 +40,17 @@ namespace ConsoleApp2
         private int VertexArrayObject;
         private int ElementBufferObject;
         private Shader shader;
+        //private Texture temp = new Texture();
         private Texture texture;
         private Texture texture2;
         public float t, x, y, z;
 
         private Matrix4 view;
         private Matrix4 projection;
-        private Text info = new Text();
+        private readonly Text info = new Text();
         public string texto;
+        public Vector3 currentPos = Vector3.Zero;
 
-        private Camera camera;
 
 
 
@@ -82,11 +83,11 @@ namespace ConsoleApp2
             shader.Use();
 
 
-           
-            info.show("Hello");
+            Text info = new Text();
+            info.Show("Slick");
 
             texture = new Texture();
-            texture.Texture1("Output/me.png");
+            texture.Texture1("Output/you.png");
             texture.Use();
 
             texture2 = new Texture();
@@ -95,9 +96,6 @@ namespace ConsoleApp2
 
             shader.SetInt("texture1", 0);
             shader.SetInt("texture2", 1);
-
-            camera = new Camera(new Vector3(0.0f, 0.0f, 5.0f), 45f);
-            camera.AspectRatio = width / height;
 
 
             VertexArrayObject = GL.GenVertexArray();
@@ -135,31 +133,27 @@ namespace ConsoleApp2
             shader.Dispose();
         }
 
-        public void draw()
+        public void Draw(float x, Camera cam)
         {
             t += 1;
 
-            //update();
-            if ((t % 17) == 0)
-            {
-               // update();
-            }
+            //Update(cam.Position);
+            Tick();
 
             texture.Use(TextureUnit.Texture0);
             texture2.Use(TextureUnit.Texture1);
             shader.Use();
 
 
-            var model = Matrix4.Identity * Matrix4.CreateRotationX(MathHelper.DegreesToRadians(180f));
+            var model = Matrix4.Identity * Matrix4.CreateRotationX(MathHelper.DegreesToRadians(180.0f));
             //model *= Matrix4.CreateRotationX(MathHelper.DegreesToRadians(t*1f));
-            model *= Matrix4.CreateScale(4.0f, 1.0f, 1.0f);
-            model *= Matrix4.CreateRotationZ(MathHelper.DegreesToRadians(t*1f));
-            model *= Matrix4.CreateTranslation(x * 1.0f, y * 2.0f, z * 1.0f);
-            //model *= Matrix4.CreateScale(4.0f,1.0f,1.0f);
+            //model *= Matrix4.CreateRotationY(MathHelper.DegreesToRadians(t*1f));
+            model *= Matrix4.CreateTranslation(x * 1.0f, y * 2.0f, 1 * 5.0f);
+            model *= Matrix4.CreateScale(4.0f,1.0f,1.0f);
 
+            view = cam.GetViewMatrix();
 
-            view = camera.GetViewMatrix();
-            projection = camera.GetProjectionMatrix();
+            projection = Matrix4.CreatePerspectiveFieldOfView(MathHelper.DegreesToRadians(cam.Fov), cam.AspectRatio, 0.1f, 5000.0f);
 
 
             shader.SetMatrix4("model", model);
@@ -172,18 +166,29 @@ namespace ConsoleApp2
 
         }
 
-
-
-
-        public void update()
+        public void Tick()
         {
-            
-            if ((t % 17) == 0)
-            {
-                info.show(t.ToString());
-                texture.Texture1("Output/me.png");
+                texto = t.ToString();
+                info.Show(texto);
+                texture.Texture1("Output/you.png");
                 texture.Use();
-                //shader.SetInt("texture1", 0);
+                shader.SetInt("texture1", 0);
+        }
+
+
+
+        public void Update(Vector3 pos)
+        {
+            if (pos != currentPos)
+            {
+                
+                texto = t.ToString();
+                info.Show(texto);
+                texture.Texture1("Output/you.png");
+                texture.Use();
+                shader.SetInt("texture1", 0);
+
+                currentPos = pos;
             }
         }
 
