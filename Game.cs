@@ -22,7 +22,7 @@ namespace ConsoleApp2
         //private readonly Shader shader;
         private readonly Triangle triangle = new Triangle();
         private readonly Square square = new Square();
-        private readonly Square square2 = new Square();
+        private readonly ScreenText score = new ScreenText();
         private readonly Shape shape = new Shape();
 
         private Camera camera;
@@ -65,7 +65,7 @@ namespace ConsoleApp2
 
             triangle.load();
             square.load(_width, _height);
-            square2.load(_width, _height);
+            score.load(_width, _height);
 
             shape.load(_width, _height);
 
@@ -95,7 +95,7 @@ namespace ConsoleApp2
 
             triangle.unload();
             square.unload();
-            square2.unload();
+            score.unload();
 
             shape.unload();
             //shape1.unload();
@@ -248,23 +248,6 @@ namespace ConsoleApp2
 
         protected override void OnMouseWheel(MouseWheelEventArgs e)
         {
-            //if (camera._fov >= 45.0f)
-            //{
-            //    camera._fov = 45.0f;
-            //    //Console.WriteLine(camera.Fov);
-            //    //Console.WriteLine(camera._fov);
-            //}
-            //else if (camera._fov <= 1.0f)
-            //{
-            //    camera._fov = 1.0f;
-            //   // Console.WriteLine(camera.Fov);
-            //}
-            //else
-            //{
-            //    camera.Fov = Mouse.GetState().WheelPrecise;
-            //    //Console.WriteLine(camera.Fov);
-
-            //}
 
             camera.Fov = Mouse.GetState().WheelPrecise;
             Console.WriteLine(camera.Fov);
@@ -286,7 +269,7 @@ namespace ConsoleApp2
 
             //triangle.draw();
             square.Draw(-0.6f,camera);
-            square2.Draw(1f,camera);
+            score.DrawText(0.8f,0.8f);
 
             Context.SwapBuffers();
             base.OnRenderFrame(e);
