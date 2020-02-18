@@ -156,7 +156,7 @@ namespace ConsoleApp2
             shader.SetMatrix4("projection", projection);
 
             GL.BindVertexArray(VertexArrayObject);
-            GL.DrawElements(PrimitiveType.Triangles, indices.Length, DrawElementsType.UnsignedInt, (indices.Length / 5));
+            GL.DrawElements(PrimitiveType.Triangles, indices.Length, DrawElementsType.UnsignedInt, 0);
      
 
         }

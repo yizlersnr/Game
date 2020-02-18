@@ -15,10 +15,9 @@ namespace ConsoleApp2
         readonly string text;
         readonly string line;
         readonly string currentLine;
+        readonly int count;
 
-        int count;
-
-        private float[] vertices = new float[0];
+        private readonly float[] vertices = new float[0];
         readonly float[] texture = new float[0];
         readonly float[] normals = new float[0];
 
@@ -31,7 +30,6 @@ namespace ConsoleApp2
         public ObjLoader(string path)
         {
             text = File.ReadAllText(path);
-            string[] lines = File.ReadAllLines(path);
             if (text == null)
             {
                 Console.WriteLine("Imposible to open the file");
@@ -41,7 +39,6 @@ namespace ConsoleApp2
                 Console.Write("read and open");
             }
 
-            
             StreamReader file = new StreamReader(path);
             while ((line = file.ReadLine()) != null)
             {

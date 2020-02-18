@@ -12,8 +12,8 @@ namespace ConsoleApp2
     class Button
     {
 
-        private float[] vertices1;
-        private uint[] indices;
+        private readonly float[] vertices1;
+        private readonly uint[] indices;
 
         private readonly float[] vertices =
         {
@@ -40,10 +40,10 @@ namespace ConsoleApp2
         private int VertexArrayObject;
         private int ElementBufferObject;
         private Shader shader;
-        //private Texture temp = new Texture();
+        
         private Texture texture;
         private Texture texture2;
-        public float t, x, y, z, Bx, By;
+        public float Bx, By;
         public float btnTop, btnBottom, btnLeft, btnRight;
         public string title;
 
@@ -125,7 +125,7 @@ namespace ConsoleApp2
             projection = Matrix4.CreatePerspectiveFieldOfView(MathHelper.DegreesToRadians(45f), width / (float)height, 0.1f, 100.0f);
 
             view = Matrix4.CreateTranslation(0.0f, 0.0f, -66.9f);
-            projection = Matrix4.CreateOrthographic(width, height,0.1f,100.0f);
+            projection = Matrix4.CreateOrthographic(windowSize.X, windowSize.Y, 0.1f,100.0f);
 
         }
 
@@ -145,19 +145,16 @@ namespace ConsoleApp2
             texture2.Use(TextureUnit.Texture1);
             shader.Use();
 
-
             var model = Matrix4.Identity * Matrix4.CreateRotationX(MathHelper.DegreesToRadians(180f));
-            model *= Matrix4.CreateTranslation(Bx * 1.0f, By * 1.0f, z * 1.0f);
+            model *= Matrix4.CreateTranslation(Bx * 1.0f, By * 1.0f, 0.0f);
             model *= Matrix4.CreateScale(100.0f,50.0f,1.0f);
-
 
             shader.SetMatrix4("model", model);
             shader.SetMatrix4("view", view);
             shader.SetMatrix4("projection", projection);
 
             GL.BindVertexArray(VertexArrayObject);
-            GL.DrawElements(PrimitiveType.Triangles, indices.Length, DrawElementsType.UnsignedInt, (indices.Length / 5));
-
+            GL.DrawElements(PrimitiveType.Triangles, indices.Length, DrawElementsType.UnsignedInt, 0);
         }
 
 
@@ -165,14 +162,11 @@ namespace ConsoleApp2
 
         public void update(Vector2 pos, Vector2 windowSize)
         {
-            Console.WriteLine("Bx,By " + Bx + ","+ By);
+            btnTop = (windowSize.Y / 2 - windowSize.Y / 24); 
+            btnBottom = (windowSize.Y / 2 + windowSize.Y / 24);
+            btnLeft = (windowSize.X / 2 - windowSize.X / 24);
+            btnRight = (windowSize.X / 2 + windowSize.X / 24);
 
-            btnTop = (windowSize.Y / 2 - 25); 
-            btnBottom = (windowSize.Y / 2 + 25);
-            btnLeft = (windowSize.X / 2 - 50);
-            btnRight = (windowSize.X / 2 + 50);
-
-            Console.WriteLine("Windosize " + windowSize);
 
             if (pos.X > (Bx * windowSize.X/12 + btnLeft) && pos.X < (Bx * windowSize.X / 12 + btnRight) && pos.Y > (btnTop - By * windowSize.Y / 12) && pos.Y < (btnBottom - By * windowSize.Y / 12))
             {
@@ -193,56 +187,5 @@ namespace ConsoleApp2
                 shader.SetInt("texture1", 0);
             }
         }
-
-        public void Reset()
-        {
-            x = 0;
-            y = 0;
-        }
-
-        public void left()
-        {
-            x -= 0.1f;
-        }
-
-        public void right()
-        {
-            x += 0.1f;
-        }
-
-        public void forward()
-        {
-            z -= 0.1f;
-        }
-
-        public void backward()
-        {
-            z += 0.1f;
-        }
-
-        public void move(float x)
-        {
-            t += 1;
-
-            texture.Use(TextureUnit.Texture0);
-            texture2.Use(TextureUnit.Texture1);
-            shader.Use();
-
-            var transform = Matrix4.Identity;
-
-            //transform *= Matrix4.CreateRotationZ(MathHelper.DegreesToRadians(t * 1.0f));
-            //transform *= Matrix4.CreateRotationX(MathHelper.DegreesToRadians(20f));
-            //transform *= Matrix4.CreateRotationY(MathHelper.DegreesToRadians(t * 1.0f));
-            transform *= Matrix4.CreateScale(0.65f);
-            transform *= Matrix4.CreateTranslation(x, 0.0f, 0.0f);
-
-            shader.SetMatrix4("transform", transform);
-
-            GL.BindVertexArray(VertexArrayObject);
-            GL.DrawElements(PrimitiveType.Triangles, indices.Length, DrawElementsType.UnsignedInt, 0);
-
-        }
-
-
     }
 }
