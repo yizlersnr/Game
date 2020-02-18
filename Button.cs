@@ -44,6 +44,7 @@ namespace ConsoleApp2
         private Texture texture;
         private Texture texture2;
         public float t, x, y, z, Bx, By;
+        public float btnTop, btnBottom, btnLeft, btnRight;
         public string title;
 
         private Matrix4 view;
@@ -68,8 +69,11 @@ namespace ConsoleApp2
 
         }
 
-        public void load(int width, int height)
+        public void Load(Vector2 windowSize)
         {
+            float width = windowSize.X; 
+            float height =  windowSize.Y;
+
             GL.Enable(EnableCap.DepthTest);
 
             VertexBufferObject = GL.GenBuffer();
@@ -85,7 +89,7 @@ namespace ConsoleApp2
 
 
             //Text info = new Text();
-            info.show("Hello");
+            info.show("Menu");
 
             texture = new Texture();
             texture.Texture1("Output/you.png");
@@ -134,12 +138,9 @@ namespace ConsoleApp2
             shader.Dispose();
         }
 
-        public void draw(float x, float y)
+        public void Draw()
         {
-            t += 1;
-
-            //update();
-
+    
             texture.Use(TextureUnit.Texture0);
             texture2.Use(TextureUnit.Texture1);
             shader.Use();
@@ -162,11 +163,18 @@ namespace ConsoleApp2
 
 
 
-        public void update(Vector2 pos)
+        public void update(Vector2 pos, Vector2 windowSize)
         {
             Console.WriteLine("Bx,By " + Bx + ","+ By);
-           
-            if (pos.X > (Bx * 100 + 550) && pos.X < (Bx * 100 + 650) && pos.Y > (275 - By * 50) && pos.Y < (325 - By * 50))
+
+            btnTop = (windowSize.Y / 2 - 25); 
+            btnBottom = (windowSize.Y / 2 + 25);
+            btnLeft = (windowSize.X / 2 - 50);
+            btnRight = (windowSize.X / 2 + 50);
+
+            Console.WriteLine("Windosize " + windowSize);
+
+            if (pos.X > (Bx * windowSize.X/12 + btnLeft) && pos.X < (Bx * windowSize.X / 12 + btnRight) && pos.Y > (btnTop - By * windowSize.Y / 12) && pos.Y < (btnBottom - By * windowSize.Y / 12))
             {
                 //texto = "Quit"; // pos.ToString();
                 //info.show(texto);

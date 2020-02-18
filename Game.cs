@@ -33,8 +33,10 @@ namespace ConsoleApp2
         private Vector2 lastPos;
         private bool firstMove = true;
         private bool focused = true;
+        private bool showMenu = true;
         private float Px, Py = 0;
         private Vector2 PxPy;
+        private Vector2 windowSize;
 
         //private readonly Text text = new Text();
         //private readonly Shape shape1 = new Shape();
@@ -58,6 +60,8 @@ namespace ConsoleApp2
         {
             _width = width;
             _height = height;
+
+            windowSize = new Vector2(_width, _height);
         }
 
         protected override void OnLoad(EventArgs e)
@@ -74,10 +78,10 @@ namespace ConsoleApp2
             square.load(_width, _height);
             square2.load(_width, _height);
 
-            play1.load(_width, _height);
-            play2.load(_width, _height);
-            play3.load(_width, _height);
-            play4.load(_width, _height);
+            play1.Load(windowSize);
+            play2.Load(windowSize);
+            play3.Load(windowSize);
+            play4.Load(windowSize);
 
             shape.load(_width, _height);
 
@@ -115,10 +119,7 @@ namespace ConsoleApp2
             play4.unload();
 
             shape.unload();
-            //shape1.unload();
-            //shape2.unload();
-
-            //shader.Dispose();
+            
             base.OnUnload(e);
         }
 
@@ -166,9 +167,14 @@ namespace ConsoleApp2
                 shape.move(0.5f);
             }
 
-            if (input.IsKeyDown(Key.B))
+            if (input.IsKeyDown(Key.V))
             {
-                //square.update();
+                showMenu = false;
+            }
+
+            if (input.IsKeyDown(Key.C))
+            {
+                showMenu = true;
             }
 
 
@@ -262,10 +268,13 @@ namespace ConsoleApp2
                 PxPy.Y = Mouse.GetCursorState().Y - Y - 30;
                 Console.WriteLine(PxPy.X + "," + PxPy.Y);
 
-                play1.update(PxPy);
-                play2.update(PxPy);
-                play3.update(PxPy);
-                play4.update(PxPy);
+                windowSize.X = Width;
+                windowSize.Y = Height;
+
+                play1.update(PxPy,windowSize);
+                play2.update(PxPy,windowSize);
+                play3.update(PxPy,windowSize);
+                play4.update(PxPy,windowSize);
             }
             
 
@@ -295,10 +304,15 @@ namespace ConsoleApp2
             //shape2.draw();
 
             //triangle.draw();
-            play1.draw(-6.0f, 1.0f);
-            play2.draw(-5.0f, 2.0f);
-            play3.draw(-5.0f, 2.0f);
-            play4.draw(-4.0f, 3.0f);
+
+            if (showMenu == true)
+            {
+                play1.Draw();
+                play2.Draw();
+                play3.Draw();
+                play4.Draw();
+            }
+            
             //play.draw(-3.0f, 1.0f);
             //play.draw(-2.0f, 2.0f);
             //play.draw(-1.0f, 3.0f);
@@ -321,6 +335,21 @@ namespace ConsoleApp2
         protected override void OnResize(EventArgs e)
         {
             GL.Viewport(0, 0, Width, Height);
+
+
+            PxPy.X = Mouse.GetCursorState().X - X - 7;
+            PxPy.Y = Mouse.GetCursorState().Y - Y - 30;
+            Console.WriteLine("resized"+ Width);
+
+            windowSize.X = Width;
+            windowSize.Y = Height;
+
+            play1.update(PxPy, windowSize);
+            play2.update(PxPy, windowSize);
+            play3.update(PxPy, windowSize);
+            play4.update(PxPy, windowSize);
+
+
             base.OnResize(e);
         }
 

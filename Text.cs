@@ -35,7 +35,7 @@ namespace ConsoleApp2
             //FontFamily fontWoff = fonts.Install(@"SixLaborsSampleAB.woff");
             //FontFamily font2 = fonts.Install("OpenSans-Regular.ttf");
             //FontFamily carter = fonts.Install("CarterOne.ttf");
-            FontFamily Wendy_One = fonts.Install("WendyOne-Regular.ttf");
+            FontFamily Wendy_One = fonts.Install("OpenSans-Regular.ttf");
 
             //RenderText(font, "abc", 72);
             //RenderText(font, "ABd", 72);
