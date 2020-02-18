@@ -23,17 +23,21 @@ namespace ConsoleApp2
         private readonly Triangle triangle = new Triangle();
         private readonly Square square = new Square();
         private readonly Square square2 = new Square();
+
+        private readonly Button[] buttons;
         private readonly Button play1 = new Button(-4.5f, 5.0f,"play");
         private readonly Button play2 = new Button(-4.5f, 3.5f,"options");
         private readonly Button play3 = new Button(-4.5f, 2.0f,"credits");
         private readonly Button play4 = new Button(-4.5f, 0.5f, "quit");
+
+
         private readonly Shape shape = new Shape();
 
         private Camera camera;
         private Vector2 lastPos;
         private bool firstMove = true;
         private bool focused = true;
-        private bool showMenu = true;
+        static bool showMenu = true;
         private Vector2 PxPy;
         private Vector2 windowSize;
 
@@ -61,6 +65,8 @@ namespace ConsoleApp2
             _height = height;
 
             windowSize = new Vector2(_width, _height);
+
+            buttons = new Button[]{play1, play2, play3, play4};
         }
 
         protected override void OnLoad(EventArgs e)
@@ -77,10 +83,11 @@ namespace ConsoleApp2
             square.load(_width, _height);
             square2.load(_width, _height);
 
-            play1.Load(windowSize);
-            play2.Load(windowSize);
-            play3.Load(windowSize);
-            play4.Load(windowSize);
+
+            foreach (Button button in buttons)
+            {
+                button.Load(windowSize);
+            }
 
             shape.load(_width, _height);
 
@@ -105,10 +112,10 @@ namespace ConsoleApp2
             square.unload();
             square2.unload();
 
-            play1.unload();
-            play2.unload();
-            play3.unload();
-            play4.unload();
+            foreach (Button button in buttons)
+            {
+                button.unload();
+            }
 
             shape.unload();
             
@@ -265,23 +272,31 @@ namespace ConsoleApp2
                 windowSize.X = Width;
                 windowSize.Y = Height;
 
-                play1.Update(PxPy,windowSize);
-                play2.Update(PxPy,windowSize);
-                play3.Update(PxPy,windowSize);
-                play4.Update(PxPy,windowSize);
+                foreach (Button button in buttons)
+                {
+                    button.Update(PxPy, windowSize);
+                }
             }
             
-
             base.OnMouseMove(e);
+        }
+
+        public static void AwesomeMethod()
+        {
+            Console.WriteLine("cool");
+            showMenu = false;
+            //CursorVisible = false;
         }
 
 
         protected override void OnMouseDown(MouseButtonEventArgs e)
         {
-            play1.Click(PxPy, windowSize);
-            play2.Click(PxPy, windowSize);
-            play3.Click(PxPy, windowSize);
-            play4.Click(PxPy, windowSize);
+            
+            foreach (Button button in buttons)
+            {
+                button.Click(PxPy, windowSize);
+            }
+
             base.OnMouseDown(e);
         }
         
@@ -299,8 +314,6 @@ namespace ConsoleApp2
 
             GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
 
-            
-
             shape.Draw(camera);
             //shape1.draw();
             //shape2.draw();
@@ -309,10 +322,10 @@ namespace ConsoleApp2
 
             if (showMenu == true)
             {
-                play1.Draw();
-                play2.Draw();
-                play3.Draw();
-                play4.Draw();
+                foreach (Button button in buttons)
+                {
+                    button.Draw();
+                }
             }
 
             //play.draw(0.0f);
@@ -333,10 +346,10 @@ namespace ConsoleApp2
             windowSize.X = Width;
             windowSize.Y = Height;
 
-            play1.Update(PxPy, windowSize);
-            play2.Update(PxPy, windowSize);
-            play3.Update(PxPy, windowSize);
-            play4.Update(PxPy, windowSize);
+            foreach (Button button in buttons)
+            {
+                button.Update(PxPy, windowSize);
+            }
 
             base.OnResize(e);
         }

@@ -140,7 +140,6 @@ namespace ConsoleApp2
 
         public void Draw()
         {
-    
             texture.Use(TextureUnit.Texture0);
             texture2.Use(TextureUnit.Texture1);
             shader.Use();
@@ -156,8 +155,6 @@ namespace ConsoleApp2
             GL.BindVertexArray(VertexArrayObject);
             GL.DrawElements(PrimitiveType.Triangles, indices.Length, DrawElementsType.UnsignedInt, 0);
         }
-
-
 
 
         public void Update(Vector2 pos, Vector2 windowSize)
@@ -195,12 +192,36 @@ namespace ConsoleApp2
             btnLeft = (windowSize.X / 2 - windowSize.X / 24);
             btnRight = (windowSize.X / 2 + windowSize.X / 24);
 
-
             if (pos.X > (Bx * windowSize.X / 12 + btnLeft) && pos.X < (Bx * windowSize.X / 12 + btnRight) && pos.Y > (btnTop - By * windowSize.Y / 12) && pos.Y < (btnBottom - By * windowSize.Y / 12))
             {
                 Console.WriteLine("Clicked on " + title);
-            }
-            
+
+        
+                switch (title)
+                {
+                    case "play":
+                        Console.WriteLine("Case play");
+                        GL.ClearColor(1.0f, 0.0f, 0.0f, 1.0f);
+                        break;
+                    case "options":
+                        Console.WriteLine("Case options");
+                        GL.ClearColor(0.2f, 0.3f, 0.3f, 1.0f);
+                        break;
+                    case "credits":
+                        Console.WriteLine("Case credits");
+                        GL.ClearColor(0.0f, 0.0f, 1.0f, 1.0f);
+                        break;
+                    case "quit":
+                        Console.WriteLine("Case quit");
+                        Game.AwesomeMethod();
+
+                        GL.ClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+                        break;
+                    default:
+                        Console.WriteLine("Default case");
+                        break;
+                }
+            }            
         }
     }
 }
