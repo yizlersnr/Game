@@ -34,7 +34,6 @@ namespace ConsoleApp2
         private bool firstMove = true;
         private bool focused = true;
         private bool showMenu = true;
-        private float Px, Py = 0;
         private Vector2 PxPy;
         private Vector2 windowSize;
 
@@ -50,8 +49,8 @@ namespace ConsoleApp2
         // We create a double to hold how long has passed since the program was opened.
         private double _time;
 
-        private Matrix4 view; // The view matrix is what you might consider the "camera"
-        private Matrix4 projection;
+        //private Matrix4 view; // The view matrix is what you might consider the "camera"
+        //private Matrix4 projection;
 
         private int _width, _height;
 
@@ -91,13 +90,6 @@ namespace ConsoleApp2
                 Fov = 45.0f,
                 AspectRatio = _width / _height
             };
-
-            //shape1.load(_width, _height);
-            //shape2.load(_width, _height);
-
-            //view = Matrix4.CreateTranslation(0.0f, 5.0f, -3.0f);
-            //projection = Matrix4.CreatePerspectiveFieldOfView(MathHelper.DegreesToRadians(45f), Width / (float)Height, 0.1f, 100.0f);
-
 
 
             //Code goes here
@@ -170,11 +162,13 @@ namespace ConsoleApp2
             if (input.IsKeyDown(Key.V))
             {
                 showMenu = false;
+                CursorVisible = false;
             }
 
             if (input.IsKeyDown(Key.C))
             {
                 showMenu = true;
+                CursorVisible = true;
             }
 
 
@@ -263,7 +257,7 @@ namespace ConsoleApp2
         {
             if (focused) // check to see if the window is focused  
             {
-                // Mouse.SetPosition(X + Width / 2f, Y + Height / 2f);
+                //Mouse.SetPosition(X + Width / 2f, Y + Height / 2f);
                 PxPy.X = Mouse.GetCursorState().X - X - 7;
                 PxPy.Y = Mouse.GetCursorState().Y - Y - 30;
                 Console.WriteLine(PxPy.X + "," + PxPy.Y);
@@ -271,23 +265,31 @@ namespace ConsoleApp2
                 windowSize.X = Width;
                 windowSize.Y = Height;
 
-                play1.update(PxPy,windowSize);
-                play2.update(PxPy,windowSize);
-                play3.update(PxPy,windowSize);
-                play4.update(PxPy,windowSize);
+                play1.Update(PxPy,windowSize);
+                play2.Update(PxPy,windowSize);
+                play3.Update(PxPy,windowSize);
+                play4.Update(PxPy,windowSize);
             }
             
 
             base.OnMouseMove(e);
         }
 
+
+        protected override void OnMouseDown(MouseButtonEventArgs e)
+        {
+            play1.Click(PxPy, windowSize);
+            play2.Click(PxPy, windowSize);
+            play3.Click(PxPy, windowSize);
+            play4.Click(PxPy, windowSize);
+            base.OnMouseDown(e);
+        }
+        
+
         protected override void OnMouseWheel(MouseWheelEventArgs e)
         {
-            
-
             camera.Fov = Mouse.GetState().WheelPrecise;
             Console.WriteLine(camera.Fov);
-
             base.OnMouseWheel(e);
         }
 
@@ -312,17 +314,6 @@ namespace ConsoleApp2
                 play3.Draw();
                 play4.Draw();
             }
-            
-            //play.draw(-3.0f, 1.0f);
-            //play.draw(-2.0f, 2.0f);
-            //play.draw(-1.0f, 3.0f);
-            //play.draw(0.0f, 1.0f);
-            //play.draw(1.0f, 2.0f);
-            //play.draw(2.0f, 3.0f);
-            //play.draw(3.0f, 1.0f);
-            //play.draw(4.0f, 2.0f);
-            //play.draw(5.0f, 3.0f);
-            //play.draw(6.0f, -1.0f);
 
             //play.draw(0.0f);
             //square2.draw(1f);
@@ -336,19 +327,16 @@ namespace ConsoleApp2
         {
             GL.Viewport(0, 0, Width, Height);
 
-
             PxPy.X = Mouse.GetCursorState().X - X - 7;
             PxPy.Y = Mouse.GetCursorState().Y - Y - 30;
-            Console.WriteLine("resized"+ Width);
 
             windowSize.X = Width;
             windowSize.Y = Height;
 
-            play1.update(PxPy, windowSize);
-            play2.update(PxPy, windowSize);
-            play3.update(PxPy, windowSize);
-            play4.update(PxPy, windowSize);
-
+            play1.Update(PxPy, windowSize);
+            play2.Update(PxPy, windowSize);
+            play3.Update(PxPy, windowSize);
+            play4.Update(PxPy, windowSize);
 
             base.OnResize(e);
         }

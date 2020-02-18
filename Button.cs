@@ -160,7 +160,7 @@ namespace ConsoleApp2
 
 
 
-        public void update(Vector2 pos, Vector2 windowSize)
+        public void Update(Vector2 pos, Vector2 windowSize)
         {
             btnTop = (windowSize.Y / 2 - windowSize.Y / 24); 
             btnBottom = (windowSize.Y / 2 + windowSize.Y / 24);
@@ -170,7 +170,7 @@ namespace ConsoleApp2
 
             if (pos.X > (Bx * windowSize.X/12 + btnLeft) && pos.X < (Bx * windowSize.X / 12 + btnRight) && pos.Y > (btnTop - By * windowSize.Y / 12) && pos.Y < (btnBottom - By * windowSize.Y / 12))
             {
-                //texto = "Quit"; // pos.ToString();
+                texto = "Quit"; // pos.ToString();
                 //info.show(texto);
                 texture.Texture1("Output/" + title + "2.png");
                 texture.Use();
@@ -186,6 +186,21 @@ namespace ConsoleApp2
                 texture.Use();
                 shader.SetInt("texture1", 0);
             }
+        }
+
+        public void Click(Vector2 pos, Vector2 windowSize)
+        {
+            btnTop = (windowSize.Y / 2 - windowSize.Y / 24);
+            btnBottom = (windowSize.Y / 2 + windowSize.Y / 24);
+            btnLeft = (windowSize.X / 2 - windowSize.X / 24);
+            btnRight = (windowSize.X / 2 + windowSize.X / 24);
+
+
+            if (pos.X > (Bx * windowSize.X / 12 + btnLeft) && pos.X < (Bx * windowSize.X / 12 + btnRight) && pos.Y > (btnTop - By * windowSize.Y / 12) && pos.Y < (btnBottom - By * windowSize.Y / 12))
+            {
+                Console.WriteLine("Clicked on " + title);
+            }
+            
         }
     }
 }
