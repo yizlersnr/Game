@@ -52,9 +52,6 @@ namespace ConsoleApp2
         public string texto;
         public Vector2 currentPos = Vector2.Zero;
 
-
-
-
         public Button(float x, float y, string name)
         {
 
