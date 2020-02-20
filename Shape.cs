@@ -33,7 +33,7 @@ namespace ConsoleApp2
         public Shape()
         {
 
-            ObjLoader obj1 = new ObjLoader("object6.txt");
+            ObjLoader obj1 = new ObjLoader("iso.txt");
 
             vertices1 = obj1.Verts();
             indices = obj1.index();
@@ -58,7 +58,8 @@ namespace ConsoleApp2
             texture = new Texture();
             texture.Texture1("awesomeface.png");
             texture.Texture1("container.png");
-            //texture.Texture1("base.png");
+            texture.Texture1("material.png");
+            texture.Texture1("iso.png");
             texture.Use();
 
             texture2 = new Texture();
@@ -107,13 +108,15 @@ namespace ConsoleApp2
 
         public void Draw(Camera cam)
         {
-            t = 1;
+            t += 10;
 
             texture.Use(TextureUnit.Texture0);
             texture2.Use(TextureUnit.Texture1);
             shader.Use();
 
             var model = Matrix4.Identity * Matrix4.CreateRotationY(MathHelper.DegreesToRadians(t * 0.05f));
+            model *= Matrix4.CreateRotationZ(MathHelper.DegreesToRadians(t * 0.05f));
+            model *= Matrix4.CreateRotationX(MathHelper.DegreesToRadians(t * 0.05f));
             model *= Matrix4.CreateTranslation(x * 1.0f, y * 0.5f, z * 1.0f);
 
             view = cam.GetViewMatrix();

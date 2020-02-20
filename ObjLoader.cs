@@ -57,7 +57,7 @@ namespace ConsoleApp2
                 {
                     Array.Resize(ref texture, texture.Length + 2);
                     texture[texture.Length - 2] = (float)Convert.ToDouble(texture_split[1]);
-                    texture[texture.Length - 1] = (float)Convert.ToDouble(texture_split[2 ]);
+                    texture[texture.Length - 1] = (float)Convert.ToDouble(texture_split[2]);
                 }
 
                 string[] normal_split = line.Split(new Char[] { ' ' });
