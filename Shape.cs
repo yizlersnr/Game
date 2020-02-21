@@ -10,10 +10,8 @@ namespace ConsoleApp2
 {
     class Shape
     {
-
         private float[] vertices1;
         private uint[] indices;
-
 
         private int VertexBufferObject;
         private int VertexArrayObject;
@@ -26,18 +24,17 @@ namespace ConsoleApp2
         private Matrix4 view;
         private Matrix4 projection;
 
-        //private Camera camera;
+        private readonly string tex;
 
-
-
-        public Shape()
+        public Shape(string obj, string _tex, Vector3 pos)
         {
-
-            ObjLoader obj1 = new ObjLoader("iso.txt");
-
+            ObjLoader obj1 = new ObjLoader(obj + ".txt");
             vertices1 = obj1.Verts();
             indices = obj1.index();
-
+            tex = _tex;
+            x = pos.X;
+            y = pos.Y;
+            z = pos.Z;
         }
 
         public void load(int width, int height)
@@ -56,10 +53,7 @@ namespace ConsoleApp2
             shader.Use();
 
             texture = new Texture();
-            texture.Texture1("awesomeface.png");
-            texture.Texture1("container.png");
-            texture.Texture1("material.png");
-            texture.Texture1("iso.png");
+            texture.Texture1(tex + ".png");
             texture.Use();
 
             texture2 = new Texture();
@@ -70,7 +64,6 @@ namespace ConsoleApp2
             shader.SetInt("texture2", 1);
 
             
-
             VertexArrayObject = GL.GenVertexArray();
             GL.BindVertexArray(VertexArrayObject);
 
@@ -83,18 +76,9 @@ namespace ConsoleApp2
             GL.EnableVertexAttribArray(vertexLocation);
             GL.VertexAttribPointer(vertexLocation, 3, VertexAttribPointerType.Float, false, 5 * sizeof(float), 0);
 
-
             var texCoordLocation = shader.GetAttribLocation("aTexCoord");
             GL.EnableVertexAttribArray(texCoordLocation);
             GL.VertexAttribPointer(texCoordLocation, 2, VertexAttribPointerType.Float, false, 5 * sizeof(float), 3 * sizeof(float));
-
-
-            view = Matrix4.CreateTranslation(0.0f, 0.0f, -9.0f);
-            projection = Matrix4.CreatePerspectiveFieldOfView(MathHelper.DegreesToRadians(45f), width / (float)height, 0.1f, 100.0f);
-
-
-
-
         }
 
         public void unload()
@@ -108,7 +92,7 @@ namespace ConsoleApp2
 
         public void Draw(Camera cam)
         {
-            t += 10;
+            t += 21;
 
             texture.Use(TextureUnit.Texture0);
             texture2.Use(TextureUnit.Texture1);
@@ -120,10 +104,8 @@ namespace ConsoleApp2
             model *= Matrix4.CreateTranslation(x * 1.0f, y * 0.5f, z * 1.0f);
 
             view = cam.GetViewMatrix();
-
             projection = Matrix4.CreatePerspectiveFieldOfView(MathHelper.DegreesToRadians(cam.Fov), cam.AspectRatio, 0.1f, 5000.0f);
 
-            //projection = cam.GetProjectionMatrix();
 
             shader.SetMatrix4("model", model);
             shader.SetMatrix4("view", view);

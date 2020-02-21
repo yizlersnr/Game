@@ -31,7 +31,9 @@ namespace ConsoleApp2
         private readonly Button play4 = new Button(-4.5f, 0.5f, "quit");
 
 
-        private readonly Shape shape = new Shape();
+        private readonly Shape[] shapes; 
+        private readonly Shape shape = new Shape("cube", "head", new Vector3(-1.5f, 0.0f, 0.0f));
+        private readonly Shape shape2 = new Shape("cube", "head2", new Vector3(1.5f, 0.0f, 0.0f));
 
         private Camera camera;
         private Vector2 lastPos;
@@ -41,9 +43,6 @@ namespace ConsoleApp2
         private Vector2 PxPy;
         private Vector2 windowSize;
 
-        //private readonly Text text = new Text();
-        //private readonly Shape shape1 = new Shape();
-        //private readonly Shape shape2 = new Shape(-0.9f, 0.8f, 0.2f, 0.1f);
 
 
 
@@ -67,6 +66,19 @@ namespace ConsoleApp2
             windowSize = new Vector2(_width, _height);
 
             buttons = new Button[]{play1, play2, play3, play4};
+
+            shapes = new Shape[81];
+            int c = 0;
+            for (int f = 0; f < 9; f++)
+            {
+                for (int m = 0; m < 9; m++)
+                {
+                    shapes[c] = new Shape("cube", "head2", new Vector3(f*4.5f, 0.0f, m*4.0f));
+                    c++;
+                }
+            }
+
+
         }
 
         protected override void OnLoad(EventArgs e)
@@ -89,7 +101,13 @@ namespace ConsoleApp2
                 button.Load(windowSize);
             }
 
-            shape.load(_width, _height);
+            foreach (Shape shape in shapes)
+            {
+                shape.load(_width, _height);
+            }
+
+            //shape.load(_width, _height);
+            //shape2.load(_width, _height);
 
 
             camera = new Camera(new Vector3(0.0f, 0.0f, 9.0f), _width / _height)
@@ -105,6 +123,37 @@ namespace ConsoleApp2
             base.OnLoad(e);
         }
 
+        protected override void OnRenderFrame(FrameEventArgs e)
+        {
+            _time += 4.0 * e.Time;
+
+            GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
+
+            //shape.Draw(camera);
+            //shape2.Draw(camera);
+
+            foreach (Shape shape in shapes)
+            {
+                shape.Draw(camera);
+            }
+
+            //triangle.draw();
+
+            if (showMenu == true)
+            {
+                foreach (Button button in buttons)
+                {
+                    button.Draw();
+                }
+            }
+
+            //play.draw(0.0f);
+            //square2.draw(1f);
+
+            Context.SwapBuffers();
+            base.OnRenderFrame(e);
+        }
+
         protected override void OnUnload(EventArgs e)
         {
 
@@ -117,8 +166,14 @@ namespace ConsoleApp2
                 button.unload();
             }
 
-            shape.unload();
-            
+            foreach (Shape shape in shapes)
+            {
+                shape.unload();
+            }
+
+            //shape.unload();
+            //shape2.unload();
+
             base.OnUnload(e);
         }
 
@@ -308,33 +363,7 @@ namespace ConsoleApp2
             base.OnMouseWheel(e);
         }
 
-        protected override void OnRenderFrame(FrameEventArgs e)
-        {
-            _time += 4.0 * e.Time;
-
-            GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
-
-            shape.Draw(camera);
-            //shape1.draw();
-            //shape2.draw();
-
-            //triangle.draw();
-
-            if (showMenu == true)
-            {
-                foreach (Button button in buttons)
-                {
-                    button.Draw();
-                }
-            }
-
-            //play.draw(0.0f);
-            //square2.draw(1f);
-
-            Context.SwapBuffers();
-            base.OnRenderFrame(e);
-        }
-
+      
 
         protected override void OnResize(EventArgs e)
         {
