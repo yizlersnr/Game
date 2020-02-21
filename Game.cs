@@ -43,6 +43,8 @@ namespace ConsoleApp2
         private Vector2 PxPy;
         private Vector2 windowSize;
 
+        private int selected;
+
 
 
 
@@ -67,13 +69,17 @@ namespace ConsoleApp2
 
             buttons = new Button[]{play1, play2, play3, play4};
 
-            shapes = new Shape[81];
+            shapes = new Shape[25];
             int c = 0;
-            for (int f = 0; f < 9; f++)
+            for (int f = 0; f < 5; f++)
             {
-                for (int m = 0; m < 9; m++)
+                for (int m = 0; m < 5; m++)
                 {
-                    shapes[c] = new Shape("cube", "head2", new Vector3(f*4.5f, 0.0f, m*4.0f));
+                    //if ((c%3)== 0) {
+                        shapes[c] = new Shape("object2", "container", new Vector3(f * 4.5f, 0.0f, m * 4.0f));
+                    //} else {
+                    //    shapes[c] = new Shape("cube", "head", new Vector3(f * 4.5f, 0.0f, m * 4.0f));
+                    //}
                     c++;
                 }
             }
@@ -148,7 +154,7 @@ namespace ConsoleApp2
             }
 
             //play.draw(0.0f);
-            //square2.draw(1f);
+            square2.draw(1f);
 
             Context.SwapBuffers();
             base.OnRenderFrame(e);
@@ -177,6 +183,31 @@ namespace ConsoleApp2
             base.OnUnload(e);
         }
 
+        protected override void OnKeyDown(KeyboardKeyEventArgs e)
+        {
+            KeyboardState input = Keyboard.GetState(); 
+
+            if (input.IsKeyDown(Key.Up))
+            {
+                if (selected <= 23)
+                {
+                    selected++;
+                    Console.WriteLine(selected);
+                }
+            }
+
+            if (input.IsKeyDown(Key.Down))
+            {
+                if (selected >= 1)
+                {
+                    selected--;
+                    Console.WriteLine(selected);
+                }
+            }
+
+            base.OnKeyDown(e);
+        }
+
         protected override void OnUpdateFrame(FrameEventArgs e)
         {
             KeyboardState input = Keyboard.GetState();
@@ -188,37 +219,37 @@ namespace ConsoleApp2
 
             if (input.IsKeyDown(Key.A))
             {
-                shape.left();
+                shapes[selected].left();
             }
 
             if (input.IsKeyDown(Key.D))
             {
-                shape.right();
+                shapes[selected].right();
             }
 
             if (input.IsKeyDown(Key.W))
             {
-                shape.forward();
+                shapes[selected].forward();
             }
 
             if (input.IsKeyDown(Key.S))
             {
-                shape.backward();
+                shapes[selected].backward();
             }
 
             if (input.IsKeyDown(Key.R))
             {
-                shape.Reset();
+                shapes[selected].Reset();
             }
 
             if (input.IsKeyDown(Key.N))
             {
-                shape.move(-0.5f);
+                shapes[selected].move(-0.5f);
             }
 
             if (input.IsKeyDown(Key.M))
             {
-                shape.move(0.5f);
+                shapes[selected].move(0.5f);
             }
 
             if (input.IsKeyDown(Key.V))
