@@ -76,7 +76,7 @@ namespace ConsoleApp2
                 for (int m = 0; m < 5; m++)
                 {
                     //if ((c%3)== 0) {
-                        shapes[c] = new Shape("object2", "container", new Vector3(f * 4.5f, 0.0f, m * 4.0f));
+                        shapes[c] = new Shape("cube", "head", new Vector3(f * 4.5f, 0.0f, m * 4.0f));
                     //} else {
                     //    shapes[c] = new Shape("cube", "head", new Vector3(f * 4.5f, 0.0f, m * 4.0f));
                     //}
