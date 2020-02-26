@@ -152,6 +152,8 @@ namespace ConsoleApp2
             //play.draw(0.0f);
             square2.Draw(3.6f, 0.765f);
 
+            //square2.update(new Vector3(shapes[selected].x, shapes[selected].y, shapes[selected].z));
+
             Context.SwapBuffers();
             base.OnRenderFrame(e);
         }
