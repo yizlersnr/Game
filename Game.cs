@@ -18,7 +18,7 @@ namespace ConsoleApp2
              0.0f,  0.5f, 0.0f  //Top vertex
         };
 
-      
+     
         //private readonly Shader shader;
         private readonly Triangle triangle = new Triangle();
         private readonly Square square = new Square();
@@ -29,7 +29,6 @@ namespace ConsoleApp2
         private readonly Button play2 = new Button(-4.5f, 3.5f,"options");
         private readonly Button play3 = new Button(-4.5f, 2.0f,"credits");
         private readonly Button play4 = new Button(-4.5f, 0.5f, "quit");
-
 
         private readonly Shape[] shapes; 
         private readonly Shape shape = new Shape("cube", "head", new Vector3(-1.5f, 0.0f, 0.0f));
@@ -45,19 +44,13 @@ namespace ConsoleApp2
 
         private int selected;
 
-
-
-
-
-
-
         // We create a double to hold how long has passed since the program was opened.
         private double _time;
 
         //private Matrix4 view; // The view matrix is what you might consider the "camera"
         //private Matrix4 projection;
 
-        private int _width, _height;
+        private readonly int _width, _height;
 
 
         public Game(int width, int height, string title) : base(width, height, GraphicsMode.Default, title)
@@ -69,17 +62,20 @@ namespace ConsoleApp2
 
             buttons = new Button[]{play1, play2, play3, play4};
 
-            shapes = new Shape[25];
+            shapes = new Shape[9];
             int c = 0;
-            for (int f = 0; f < 5; f++)
+            for (int f = 0; f < 3; f++)
             {
-                for (int m = 0; m < 5; m++)
+                for (int m = 0; m < 3; m++)
                 {
-                    //if ((c%3)== 0) {
+                    if ((c % 3) == 0)
+                    {
                         shapes[c] = new Shape("cube", "head", new Vector3(f * 4.5f, 0.0f, m * 4.0f));
-                    //} else {
-                    //    shapes[c] = new Shape("cube", "head", new Vector3(f * 4.5f, 0.0f, m * 4.0f));
-                    //}
+                    }
+                    else
+                    {
+                        shapes[c] = new Shape("cube", "head2", new Vector3(f * 4.5f, 0.0f, m * 4.0f));
+                    }
                     c++;
                 }
             }
@@ -109,7 +105,7 @@ namespace ConsoleApp2
 
             foreach (Shape shape in shapes)
             {
-                shape.load(_width, _height);
+                shape.Load();
             }
 
             //shape.load(_width, _height);
@@ -154,7 +150,7 @@ namespace ConsoleApp2
             }
 
             //play.draw(0.0f);
-            square2.draw(1f);
+            square2.Draw(1f, 0.5f);
 
             Context.SwapBuffers();
             base.OnRenderFrame(e);
@@ -322,13 +318,13 @@ namespace ConsoleApp2
                 lastPos = new Vector2(Mouse.GetCursorState().X, Mouse.GetCursorState().Y);
 
                 camera.Yaw += deltaX * camera.Sensitivity;
-                if (camera.Pitch > 89.0f)
+                if (camera.Pitch > 60.0f)
                 {
-                    camera.Pitch = 89.0f;
+                    camera.Pitch = 60.0f;
                 }
-                else if (camera.Pitch < -89.0f)
+                else if (camera.Pitch < -60.0f)
                 {
-                    camera.Pitch = -89.0f;
+                    camera.Pitch = -60.0f;
                 }
                 else
                 {

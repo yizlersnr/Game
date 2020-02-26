@@ -37,7 +37,7 @@ namespace ConsoleApp2
             z = pos.Z;
         }
 
-        public void load(int width, int height)
+        public void Load()
         {
             GL.Enable(EnableCap.DepthTest);
 

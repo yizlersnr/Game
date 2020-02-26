@@ -84,7 +84,7 @@ namespace ConsoleApp2
 
 
             //Text info = new Text();
-            info.show("Hello");
+            info.show("Nice\nPeeps\nAlways\nDo\nWell!");
 
             texture = new Texture();
             texture.Texture1("Output/you.png");
@@ -116,7 +116,7 @@ namespace ConsoleApp2
             GL.VertexAttribPointer(texCoordLocation, 2, VertexAttribPointerType.Float, false, 5 * sizeof(float), 3 * sizeof(float));
 
 
-            view = Matrix4.CreateTranslation(0.0f, 0.0f, -5.0f);
+            view = Matrix4.CreateTranslation(0.0f, 0.0f, -4.0f);
             projection = Matrix4.CreatePerspectiveFieldOfView(MathHelper.DegreesToRadians(45f), width / (float)height, 0.1f, 100.0f);
 
 
@@ -133,7 +133,7 @@ namespace ConsoleApp2
             shader.Dispose();
         }
 
-        public void draw(float x)
+        public void Draw(float x, float y)
         {
             t += 1;
 
@@ -147,8 +147,9 @@ namespace ConsoleApp2
             var model = Matrix4.Identity * Matrix4.CreateRotationX(MathHelper.DegreesToRadians(180f));
             //model *= Matrix4.CreateRotationX(MathHelper.DegreesToRadians(t*1f));
             //model *= Matrix4.CreateRotationY(MathHelper.DegreesToRadians(t*1f));
+            //model *= Matrix4.CreateRotationY(MathHelper.DegreesToRadians(t*1f));
             model *= Matrix4.CreateTranslation(x * 1.0f, y * 2.0f, z * 1.0f);
-            model *= Matrix4.CreateScale(1.0f,0.5f,1.0f);
+            //model *= Matrix4.CreateScale(1.0f,0.5f,1.0f);
 
 
             shader.SetMatrix4("model", model);
