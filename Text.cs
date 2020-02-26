@@ -27,7 +27,7 @@ namespace ConsoleApp2
             
         }
 
-        public void show(string name)
+        public void Show(string name)
         {
 
             FontCollection fonts = new FontCollection();

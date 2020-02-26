@@ -62,11 +62,11 @@ namespace ConsoleApp2
 
             buttons = new Button[]{play1, play2, play3, play4};
 
-            shapes = new Shape[9];
+            shapes = new Shape[16];
             int c = 0;
-            for (int f = 0; f < 3; f++)
+            for (int f = 0; f < 4; f++)
             {
-                for (int m = 0; m < 3; m++)
+                for (int m = 0; m < 4; m++)
                 {
                     if ((c % 3) == 0)
                     {
@@ -150,7 +150,7 @@ namespace ConsoleApp2
             }
 
             //play.draw(0.0f);
-            square2.Draw(1f, 0.5f);
+            square2.Draw(3.6f, 0.765f);
 
             Context.SwapBuffers();
             base.OnRenderFrame(e);
@@ -185,10 +185,14 @@ namespace ConsoleApp2
 
             if (input.IsKeyDown(Key.Up))
             {
-                if (selected <= 23)
+                if (selected < shapes.Length - 1)
                 {
                     selected++;
                     Console.WriteLine(selected);
+                }
+                else
+                {
+                    selected = shapes.Length - 1;
                 }
             }
 
@@ -198,6 +202,10 @@ namespace ConsoleApp2
                 {
                     selected--;
                     Console.WriteLine(selected);
+                }
+                else
+                {
+                    selected = 0;
                 }
             }
 
@@ -379,6 +387,8 @@ namespace ConsoleApp2
                 button.Click(PxPy, windowSize);
             }
 
+            square2.update(new Vector3(shapes[selected].x, shapes[selected].y, shapes[selected].z));
+
             base.OnMouseDown(e);
         }
         
@@ -390,7 +400,7 @@ namespace ConsoleApp2
             base.OnMouseWheel(e);
         }
 
-      
+           
 
         protected override void OnResize(EventArgs e)
         {

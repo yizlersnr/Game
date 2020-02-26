@@ -89,7 +89,7 @@ namespace ConsoleApp2
 
 
             //Text info = new Text();
-            info.show("Menu");
+            info.Show("Menu");
 
             texture = new Texture();
             texture.Texture1("Output/you.png");

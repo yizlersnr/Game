@@ -84,7 +84,7 @@ namespace ConsoleApp2
 
 
             //Text info = new Text();
-            info.show("Nice\nPeeps\nAlways\nDo\nWell!");
+            info.Show("Nice\nPeeps\nAlways\nDo\nWell!");
 
             texture = new Texture();
             texture.Texture1("Output/you.png");
@@ -116,11 +116,8 @@ namespace ConsoleApp2
             GL.VertexAttribPointer(texCoordLocation, 2, VertexAttribPointerType.Float, false, 5 * sizeof(float), 3 * sizeof(float));
 
 
-            view = Matrix4.CreateTranslation(0.0f, 0.0f, -4.0f);
+            view = Matrix4.CreateTranslation(0.0f, 0.0f, -5.0f);
             projection = Matrix4.CreatePerspectiveFieldOfView(MathHelper.DegreesToRadians(45f), width / (float)height, 0.1f, 100.0f);
-
-
-
 
         }
 
@@ -151,13 +148,13 @@ namespace ConsoleApp2
             model *= Matrix4.CreateTranslation(x * 1.0f, y * 2.0f, z * 1.0f);
             //model *= Matrix4.CreateScale(1.0f,0.5f,1.0f);
 
-
             shader.SetMatrix4("model", model);
             shader.SetMatrix4("view", view);
             shader.SetMatrix4("projection", projection);
 
             GL.BindVertexArray(VertexArrayObject);
             GL.DrawElements(PrimitiveType.Triangles, indices.Length, DrawElementsType.UnsignedInt, 0);
+
      
 
         }
@@ -169,8 +166,11 @@ namespace ConsoleApp2
         {
             if (pos != currentPos)
             {
-                texto = pos.ToString();
-                info.show(texto);
+                texto = pos.X.ToString("0.0") + "," + pos.Y.ToString("0.0") + "," + pos.Z.ToString("0.0");
+                //info.Show(texto);
+
+                info.Show("Nice\nX"+ pos.X.ToString("0.0") + "\nY" + pos.Y.ToString("0.0") + "\nZ" + pos.Z.ToString("0.0") +"\nWell!");
+
                 texture.Texture1("Output/you.png");
                 texture.Use();
                 shader.SetInt("texture1", 0);
