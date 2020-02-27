@@ -62,23 +62,35 @@ namespace ConsoleApp2
 
             buttons = new Button[]{play1, play2, play3, play4};
 
-            shapes = new Shape[16];
+            shapes = new Shape[6];
             int c = 0;
-            for (int f = 0; f < 4; f++)
+            for (int f = 0; f < 2; f++)
             {
-                for (int m = 0; m < 4; m++)
+                for (int m = 0; m < 2; m++)
                 {
-                    if ((c % 3) == 0)
+                    if (c == 0)
                     {
-                        shapes[c] = new Shape("cube", "head", new Vector3(f * 4.5f, 0.0f, m * 4.0f));
+                       shapes[c] = new Shape("cube", "head", new Vector3(f * 4.5f, 0.0f, m * 4.0f));
                     }
-                    else
+                    if (c == 1)
                     {
-                        shapes[c] = new Shape("cube", "head2", new Vector3(f * 4.5f, 0.0f, m * 4.0f));
+                        shapes[c] = new Shape("iso", "container", new Vector3(f * 4.5f, 0.0f, m * 4.0f));
+                    }
+                    if (c == 2)
+                    {
+                        shapes[c] = new Shape("iso", "iso", new Vector3(f * 4.5f, 0.0f, m * 4.0f));
+                    }
+                    if (c == 3)
+                    {
+                        shapes[c] = new Shape("iso", "base", new Vector3(f * 4.5f, 0.0f, m * 4.0f));
                     }
                     c++;
                 }
             }
+
+            shapes[c] = new Shape("iso", "base", new Vector3(2 * 4.5f, 0.0f, 2 * 4.0f));
+            c++;
+            shapes[c] = new Shape("object2", "container", new Vector3(3 * 4.5f, 0.0f, 3 * 4.0f));
 
 
         }

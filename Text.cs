@@ -23,7 +23,7 @@ namespace ConsoleApp2
         
 
         public Text()
-        {
+        { 
             
         }
 
