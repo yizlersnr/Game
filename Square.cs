@@ -177,6 +177,7 @@ namespace ConsoleApp2
 
                 currentPos = pos;
             }
+
         }
 
         public void Reset()
@@ -205,26 +206,9 @@ namespace ConsoleApp2
             z += 0.1f;
         }
 
-        public void move(float x)
+        public void move(string item, Vector3 pos)
         {
-            t += 1;
-
-            texture.Use(TextureUnit.Texture0);
-            texture2.Use(TextureUnit.Texture1);
-            shader.Use();
-
-            var transform = Matrix4.Identity;
-
-            //transform *= Matrix4.CreateRotationZ(MathHelper.DegreesToRadians(t * 1.0f));
-            //transform *= Matrix4.CreateRotationX(MathHelper.DegreesToRadians(20f));
-            //transform *= Matrix4.CreateRotationY(MathHelper.DegreesToRadians(t * 1.0f));
-            transform *= Matrix4.CreateScale(0.65f);
-            transform *= Matrix4.CreateTranslation(x, 0.0f, 0.0f);
-
-            shader.SetMatrix4("transform", transform);
-
-            GL.BindVertexArray(VertexArrayObject);
-            GL.DrawElements(PrimitiveType.Triangles, indices.Length, DrawElementsType.UnsignedInt, 0);
+            info.ShowText(item + " X: " + pos.X.ToString("0.0") + " Y: " + pos.Y.ToString("0.0") + "Z: " + pos.Z.ToString("0.0") + "\nWell!");
 
         }
 

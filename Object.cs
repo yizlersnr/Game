@@ -8,7 +8,7 @@ using OpenTK.Graphics.OpenGL4;
 
 namespace ConsoleApp2
 {
-    class Shape
+    class Object
     {
         private float[] vertices1;
         private uint[] indices;
@@ -25,8 +25,9 @@ namespace ConsoleApp2
         private Matrix4 projection;
 
         private readonly string tex;
+        public string name;
 
-        public Shape(string obj, string _tex, Vector3 pos)
+        public Object(string obj, string _tex, Vector3 pos, string shapeName)
         {
             ObjLoader obj1 = new ObjLoader(obj + ".txt");
             vertices1 = obj1.Verts();
@@ -35,6 +36,7 @@ namespace ConsoleApp2
             x = pos.X;
             y = pos.Y;
             z = pos.Z;
+            name = shapeName;
         }
 
         public void Load()

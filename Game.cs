@@ -30,9 +30,9 @@ namespace ConsoleApp2
         private readonly Button play3 = new Button(-4.5f, 2.0f,"credits");
         private readonly Button play4 = new Button(-4.5f, 0.5f, "quit");
 
-        private readonly Shape[] shapes; 
-        private readonly Shape shape = new Shape("cube", "head", new Vector3(-1.5f, 0.0f, 0.0f));
-        private readonly Shape shape2 = new Shape("cube", "head2", new Vector3(1.5f, 0.0f, 0.0f));
+        private readonly Object[] shapes; 
+        private readonly Object shape = new Object("cube", "head", new Vector3(-1.5f, 0.0f, 0.0f)," s1 ");
+        private readonly Object shape2 = new Object("cube", "head2", new Vector3(1.5f, 0.0f, 0.0f)," s2 ");
 
         private Camera camera;
         private Vector2 lastPos;
@@ -62,7 +62,7 @@ namespace ConsoleApp2
 
             buttons = new Button[]{play1, play2, play3, play4};
 
-            shapes = new Shape[6];
+            shapes = new Object[6];
             int c = 0;
             for (int f = 0; f < 2; f++)
             {
@@ -70,27 +70,27 @@ namespace ConsoleApp2
                 {
                     if (c == 0)
                     {
-                       shapes[c] = new Shape("cube", "head", new Vector3(f * 4.5f, 0.0f, m * 4.0f));
+                       shapes[c] = new Object("cube", "head", new Vector3(f * 4.5f, 0.0f, m * 4.0f), "cube " + c.ToString());
                     }
                     if (c == 1)
                     {
-                        shapes[c] = new Shape("iso", "container", new Vector3(f * 4.5f, 0.0f, m * 4.0f));
+                        shapes[c] = new Object("iso", "container", new Vector3(f * 4.5f, 0.0f, m * 4.0f), "box " + c.ToString());
                     }
                     if (c == 2)
                     {
-                        shapes[c] = new Shape("iso", "iso", new Vector3(f * 4.5f, 0.0f, m * 4.0f));
+                        shapes[c] = new Object("iso", "iso", new Vector3(f * 4.5f, 0.0f, m * 4.0f), "iso " + c.ToString());
                     }
                     if (c == 3)
                     {
-                        shapes[c] = new Shape("iso", "base", new Vector3(f * 4.5f, 0.0f, m * 4.0f));
+                        shapes[c] = new Object("iso", "base", new Vector3(f * 4.5f, 0.0f, m * 4.0f), "cube " + c.ToString());
                     }
                     c++;
                 }
             }
 
-            shapes[c] = new Shape("iso", "base", new Vector3(2 * 4.5f, 0.0f, 2 * 4.0f));
+            shapes[c] = new Object("iso", "base", new Vector3(2 * 4.5f, 0.0f, 2 * 4.0f), "base " + c.ToString());
             c++;
-            shapes[c] = new Shape("object2", "container", new Vector3(3 * 4.5f, 0.0f, 3 * 4.0f));
+            shapes[c] = new Object("object2", "container", new Vector3(3 * 4.5f, 0.0f, 3 * 4.0f), "object " + c.ToString());
 
 
         }
@@ -115,7 +115,7 @@ namespace ConsoleApp2
                 button.Load(windowSize);
             }
 
-            foreach (Shape shape in shapes)
+            foreach (Object shape in shapes)
             {
                 shape.Load();
             }
@@ -146,7 +146,7 @@ namespace ConsoleApp2
             //shape.Draw(camera);
             //shape2.Draw(camera);
 
-            foreach (Shape shape in shapes)
+            foreach (Object shape in shapes)
             {
                 shape.Draw(camera);
             }
@@ -182,7 +182,7 @@ namespace ConsoleApp2
                 button.unload();
             }
 
-            foreach (Shape shape in shapes)
+            foreach (Object shape in shapes)
             {
                 shape.unload();
             }
@@ -359,7 +359,9 @@ namespace ConsoleApp2
             camera._front.Z = (float)Math.Cos(MathHelper.DegreesToRadians(camera.Pitch)) * (float)Math.Sin(MathHelper.DegreesToRadians(camera.Yaw));
             camera._front = Vector3.Normalize(camera._front);
 
-           
+
+
+            square2.move(shapes[selected].name, new Vector3(shapes[selected].x, shapes[selected].y, shapes[selected].z));
 
             base.OnUpdateFrame(e);
         }

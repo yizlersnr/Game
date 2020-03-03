@@ -77,6 +77,8 @@ namespace ConsoleApp2
             //RenderText(new Font(font2, 10f, FontStyle.Regular), "Hello", 200, 50);
             RenderText(new Font(SinkinSans_300Light, 72f, FontStyle.Italic), name, 320, 320);
 
+            ShowText(name);
+
             //RenderText(new RendererOptions(SystemFonts.CreateFont("consolas", 72)) { TabWidth = 4 }, "xxxxxxxxxxxxxxxx\n\txxxx\txxxx\n\t\txxxxxxxx\n\t\t\txxxx");
 
             //BoundingBoxes.Generate("a b c y q G H T", SystemFonts.CreateFont("arial", 40f));
@@ -147,6 +149,11 @@ namespace ConsoleApp2
         public static void RenderText(FontFamily font, string text, float pointSize = 12)
         {
            // RenderText(new RendererOptions(new Font(font, pointSize), 96) { ApplyKerning = true, WrappingWidth = 340 }, text);
+        }
+
+        public void ShowText(string text)
+        {
+            Console.WriteLine(text);
         }
 
     }
