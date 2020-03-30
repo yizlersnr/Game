@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Threading;
 using Moq;
 using OpenTK;
 using OpenTK.Graphics.OpenGL4;
@@ -14,12 +15,7 @@ namespace ConsoleApp2
         private float[] vertices1;
         private float[] vertices2;
         private float[] frames;
-        int[] list1 = new int[4] { 1, 2, 3, 4 };
-        int[] list2 = new int[4] { 5, 6, 7, 8 };
-        int[] list3 = new int[4] { 1, 3, 2, 1 };
-        int[] list4 = new int[4] { 5, 4, 3, 2 };
-
-
+        
         private uint[] indices;
         private uint[] indices1;
         private uint[] indices2;
@@ -41,7 +37,7 @@ namespace ConsoleApp2
 
         public Object(string obj, string _tex, Vector3 pos, string shapeName)
         {
-            ObjLoader obj1 = new ObjLoader("animate_50.obj");
+            ObjLoader obj1 = new ObjLoader("wave_000001.obj");
             vertices1 = obj1.Verts();
             indices1 = obj1.index();
             tex = _tex;
@@ -50,23 +46,24 @@ namespace ConsoleApp2
             z = pos.Z;
             name = shapeName;
 
-            // if (shapeName == "ani")
-            //
-            ObjLoader obj2 = new ObjLoader("animate_100.obj");
-            vertices2 = obj2.Verts();
-            indices2 = obj1.index();
-            //}
 
             //frames = new float[][] { vertices1, vertices2};
-            frames = new float[vertices1.Length + vertices2.Length];
+            frames = new float[vertices1.Length * 100];
             Array.Copy(vertices1, frames, vertices1.Length);
-            Array.Copy(vertices2, 0, frames, vertices1.Length, vertices2.Length);
+            for (s = 2; s < 100; s++)
+            {
+                ObjLoader objf = new ObjLoader("wave_" + s.ToString("D6") + ".obj");
+                vertices2 = objf.Verts();
+                Array.Copy(vertices2, 0, frames, vertices1.Length * (s), vertices2.Length);
 
+            }
 
-            indices2 = new uint[36] { 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71 };
-            indices = new uint[indices1.Length + indices2.Length];
-            Array.Copy(indices1, indices, indices1.Length);
-            Array.Copy(indices2, 0, indices, indices1.Length, indices2.Length);
+            s = 0;
+
+            indices = new uint[48600];
+            for (uint x = 0; x < 48600; x++) {
+                indices[x] = x;
+            }
         }
 
         public void Load()
@@ -150,13 +147,16 @@ namespace ConsoleApp2
 
 
             GL.BindVertexArray(VertexArrayObject);
-            if (s==0) { 
-                GL.DrawElements(PrimitiveType.Triangles, indices2.Length, DrawElementsType.UnsignedInt, 0);
-                s = 1;
-            }else{
-                GL.DrawElements(PrimitiveType.Triangles, indices2.Length, DrawElementsType.UnsignedInt, 144);
-                s = 0;
-            }
+            
+                
+                GL.DrawElements(PrimitiveType.Triangles, indices.Length/100, DrawElementsType.UnsignedInt, s);
+       
+          
+            s += 486*4;
+
+            Thread.Sleep(50);
+
+            if(s > (486 * 4 * 100)){ s = 0; }
         }
 
         public void Reset()

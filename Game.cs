@@ -62,7 +62,7 @@ namespace ConsoleApp2
 
             buttons = new Button[]{play1, play2, play3, play4};
 
-            shapes = new Object[1];
+            shapes = new Object[3];
             int c = 0;
             //for (int f = 0; f < 2; f++)
             //{
@@ -70,7 +70,7 @@ namespace ConsoleApp2
             //    {
             //        if (c == 0)
             //        {
-            //           shapes[c] = new Object("cube", "head", new Vector3(f * 4.5f, 0.0f, m * 4.0f), "cube " + c.ToString());
+            shapes[c] = new Object("cube", "head", new Vector3(f * 4.5f, 0.0f, m * 4.0f), "cube " + c.ToString());
             //        }
             //        if (c == 1)
             //        {
@@ -88,9 +88,9 @@ namespace ConsoleApp2
             //    }
             //}
 
-            //shapes[c] = new Object("iso", "base", new Vector3(2 * 4.5f, 0.0f, 2 * 4.0f), "base " + c.ToString());
-            //c++;
-            shapes[c] = new Object("animate", "container", new Vector3(3 * 4.5f, 0.0f, 3 * 4.0f), "ani");
+            shapes[c] = new Object("iso", "iso", new Vector3(2 * 4.5f, 0.0f, 2 * 4.0f), "base " + c.ToString());
+            c++;
+            shapes[c] = new Object("animate", "base", new Vector3(3 * 4.5f, 0.0f, 3 * 4.0f), "ani");
 
 
         }

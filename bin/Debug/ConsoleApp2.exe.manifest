@@ -54,14 +54,14 @@
     </dependentAssembly>
   </dependency>
   <dependency>
-    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="ConsoleApp2.exe" size="30704">
+    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="ConsoleApp2.exe" size="30192">
       <assemblyIdentity name="ConsoleApp2" version="1.0.0.0" language="neutral" processorArchitecture="msil" />
       <hash>
         <dsig:Transforms>
           <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
         </dsig:Transforms>
         <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
-        <dsig:DigestValue>PdnWlRSjLlJRI0nycpAAT/R/UB6fk6K+BApt2KRnIqE=</dsig:DigestValue>
+        <dsig:DigestValue>XAZS7qpCag8a8YzjZxReSTIjFoivvWo3tg5yQ3Cw0FM=</dsig:DigestValue>
       </hash>
     </dependentAssembly>
   </dependency>
