@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Moq;
 using OpenTK;
 using OpenTK.Graphics.OpenGL4;
 
@@ -11,7 +12,17 @@ namespace ConsoleApp2
     class Object
     {
         private float[] vertices1;
+        private float[] vertices2;
+        private float[] frames;
+        int[] list1 = new int[4] { 1, 2, 3, 4 };
+        int[] list2 = new int[4] { 5, 6, 7, 8 };
+        int[] list3 = new int[4] { 1, 3, 2, 1 };
+        int[] list4 = new int[4] { 5, 4, 3, 2 };
+
+
         private uint[] indices;
+        private uint[] indices1;
+        private uint[] indices2;
 
         private int VertexBufferObject;
         private int VertexArrayObject;
@@ -19,7 +30,8 @@ namespace ConsoleApp2
         private Shader shader;
         private Texture texture;
         private Texture texture2;
-        public float t,x,y,z;
+        public float t, x, y, z;
+        public int s = -1440;
 
         private Matrix4 view;
         private Matrix4 projection;
@@ -29,23 +41,45 @@ namespace ConsoleApp2
 
         public Object(string obj, string _tex, Vector3 pos, string shapeName)
         {
-            ObjLoader obj1 = new ObjLoader(obj + ".txt");
+            ObjLoader obj1 = new ObjLoader("animate_50.obj");
             vertices1 = obj1.Verts();
-            indices = obj1.index();
+            indices1 = obj1.index();
             tex = _tex;
             x = pos.X;
             y = pos.Y;
             z = pos.Z;
             name = shapeName;
+
+            // if (shapeName == "ani")
+            //
+            ObjLoader obj2 = new ObjLoader("animate_100.obj");
+            vertices2 = obj2.Verts();
+            indices2 = obj1.index();
+            //}
+
+            //frames = new float[][] { vertices1, vertices2};
+            frames = new float[vertices1.Length + vertices2.Length];
+            Array.Copy(vertices1, frames, vertices1.Length);
+            Array.Copy(vertices2, 0, frames, vertices1.Length, vertices2.Length);
+
+
+            indices2 = new uint[36] { 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71 };
+            indices = new uint[indices1.Length + indices2.Length];
+            Array.Copy(indices1, indices, indices1.Length);
+            Array.Copy(indices2, 0, indices, indices1.Length, indices2.Length);
         }
 
         public void Load()
         {
             GL.Enable(EnableCap.DepthTest);
 
+            //VertexBufferObject = GL.GenBuffer();
+            //GL.BindBuffer(BufferTarget.ArrayBuffer, VertexBufferObject);
+            //GL.BufferData(BufferTarget.ArrayBuffer, vertices1.Length * sizeof(float), vertices1, BufferUsageHint.StaticDraw);
+
             VertexBufferObject = GL.GenBuffer();
             GL.BindBuffer(BufferTarget.ArrayBuffer, VertexBufferObject);
-            GL.BufferData(BufferTarget.ArrayBuffer, vertices1.Length * sizeof(float), vertices1, BufferUsageHint.StaticDraw);
+            GL.BufferData(BufferTarget.ArrayBuffer, frames.Length * sizeof(float), frames, BufferUsageHint.StaticDraw);
 
             ElementBufferObject = GL.GenBuffer();
             GL.BindBuffer(BufferTarget.ElementArrayBuffer, ElementBufferObject);
@@ -65,7 +99,7 @@ namespace ConsoleApp2
             shader.SetInt("texture1", 0);
             shader.SetInt("texture2", 1);
 
-            
+
             VertexArrayObject = GL.GenVertexArray();
             GL.BindVertexArray(VertexArrayObject);
 
@@ -96,6 +130,7 @@ namespace ConsoleApp2
         {
             t += 21;
 
+
             texture.Use(TextureUnit.Texture0);
             texture2.Use(TextureUnit.Texture1);
             shader.Use();
@@ -113,8 +148,15 @@ namespace ConsoleApp2
             shader.SetMatrix4("view", view);
             shader.SetMatrix4("projection", projection);
 
+
             GL.BindVertexArray(VertexArrayObject);
-            GL.DrawElements(PrimitiveType.Triangles, indices.Length, DrawElementsType.UnsignedInt, 0);
+            if (s==0) { 
+                GL.DrawElements(PrimitiveType.Triangles, indices2.Length, DrawElementsType.UnsignedInt, 0);
+                s = 1;
+            }else{
+                GL.DrawElements(PrimitiveType.Triangles, indices2.Length, DrawElementsType.UnsignedInt, 144);
+                s = 0;
+            }
         }
 
         public void Reset()

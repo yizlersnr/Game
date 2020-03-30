@@ -62,35 +62,35 @@ namespace ConsoleApp2
 
             buttons = new Button[]{play1, play2, play3, play4};
 
-            shapes = new Object[6];
+            shapes = new Object[1];
             int c = 0;
-            for (int f = 0; f < 2; f++)
-            {
-                for (int m = 0; m < 2; m++)
-                {
-                    if (c == 0)
-                    {
-                       shapes[c] = new Object("cube", "head", new Vector3(f * 4.5f, 0.0f, m * 4.0f), "cube " + c.ToString());
-                    }
-                    if (c == 1)
-                    {
-                        shapes[c] = new Object("iso", "container", new Vector3(f * 4.5f, 0.0f, m * 4.0f), "box " + c.ToString());
-                    }
-                    if (c == 2)
-                    {
-                        shapes[c] = new Object("iso", "iso", new Vector3(f * 4.5f, 0.0f, m * 4.0f), "iso " + c.ToString());
-                    }
-                    if (c == 3)
-                    {
-                        shapes[c] = new Object("iso", "base", new Vector3(f * 4.5f, 0.0f, m * 4.0f), "cube " + c.ToString());
-                    }
-                    c++;
-                }
-            }
+            //for (int f = 0; f < 2; f++)
+            //{
+            //    for (int m = 0; m < 2; m++)
+            //    {
+            //        if (c == 0)
+            //        {
+            //           shapes[c] = new Object("cube", "head", new Vector3(f * 4.5f, 0.0f, m * 4.0f), "cube " + c.ToString());
+            //        }
+            //        if (c == 1)
+            //        {
+            //            shapes[c] = new Object("iso", "container", new Vector3(f * 4.5f, 0.0f, m * 4.0f), "box " + c.ToString());
+            //        }
+            //        if (c == 2)
+            //        {
+            //            shapes[c] = new Object("iso", "iso", new Vector3(f * 4.5f, 0.0f, m * 4.0f), "iso " + c.ToString());
+            //        }
+            //        if (c == 3)
+            //        {
+            //            shapes[c] = new Object("iso", "base", new Vector3(f * 4.5f, 0.0f, m * 4.0f), "cube " + c.ToString());
+            //        }
+            //        c++;
+            //    }
+            //}
 
-            shapes[c] = new Object("iso", "base", new Vector3(2 * 4.5f, 0.0f, 2 * 4.0f), "base " + c.ToString());
-            c++;
-            shapes[c] = new Object("object2", "container", new Vector3(3 * 4.5f, 0.0f, 3 * 4.0f), "object " + c.ToString());
+            //shapes[c] = new Object("iso", "base", new Vector3(2 * 4.5f, 0.0f, 2 * 4.0f), "base " + c.ToString());
+            //c++;
+            shapes[c] = new Object("animate", "container", new Vector3(3 * 4.5f, 0.0f, 3 * 4.0f), "ani");
 
 
         }
