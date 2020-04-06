@@ -34,10 +34,10 @@ namespace ConsoleApp2
             {
                 Console.WriteLine("Imposible to open the file");
             }
-            else
-            {
-                Console.Write("read and open");
-            }
+            //else
+            //{
+            //    Console.Write("read and open");
+            //}
 
             StreamReader file = new StreamReader(path);
             while ((line = file.ReadLine()) != null)

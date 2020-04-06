@@ -12,12 +12,12 @@ namespace ConsoleApp2
 {
     class Object
     {
-        private float[] vertices1;
+        private float[] vertices;
         private float[] vertices2;
         private float[] frames;
         
         private uint[] indices;
-        private uint[] indices1;
+        private uint[] indicesCount;
         private uint[] indices2;
 
         private int VertexBufferObject;
@@ -27,7 +27,7 @@ namespace ConsoleApp2
         private Texture texture;
         private Texture texture2;
         public float t, x, y, z;
-        public int s = -1440;
+        public int s, icount, fcount = -1440;
 
         private Matrix4 view;
         private Matrix4 projection;
@@ -37,9 +37,9 @@ namespace ConsoleApp2
 
         public Object(string obj, string _tex, Vector3 pos, string shapeName)
         {
-            ObjLoader obj1 = new ObjLoader("wave_000001.obj");
-            vertices1 = obj1.Verts();
-            indices1 = obj1.index();
+            ObjLoader obj1 = new ObjLoader(obj + "_000001.obj");
+            vertices = obj1.Verts();
+            indicesCount = obj1.index();
             tex = _tex;
             x = pos.X;
             y = pos.Y;
@@ -47,21 +47,21 @@ namespace ConsoleApp2
             name = shapeName;
 
 
-            //frames = new float[][] { vertices1, vertices2};
-            frames = new float[vertices1.Length * 100];
-            Array.Copy(vertices1, frames, vertices1.Length);
-            for (s = 2; s < 100; s++)
+            frames = new float[vertices.Length * 50];
+            Array.Copy(vertices, frames, vertices.Length);
+            for (s = 2; s < 50; s++)
             {
-                ObjLoader objf = new ObjLoader("wave_" + s.ToString("D6") + ".obj");
+                ObjLoader objf = new ObjLoader(obj + "_" + s.ToString("D6") + ".obj");
+                Console.WriteLine("Read and opened frame "+ s.ToString());
                 vertices2 = objf.Verts();
-                Array.Copy(vertices2, 0, frames, vertices1.Length * (s), vertices2.Length);
-
+                Array.Copy(vertices2, 0, frames, vertices.Length * (s), vertices2.Length);
             }
 
             s = 0;
 
-            indices = new uint[48600];
-            for (uint x = 0; x < 48600; x++) {
+            icount = indicesCount.Length * 50;
+            indices = new uint[icount];
+            for (uint x = 0; x < icount; x++) {
                 indices[x] = x;
             }
         }
@@ -149,14 +149,14 @@ namespace ConsoleApp2
             GL.BindVertexArray(VertexArrayObject);
             
                 
-                GL.DrawElements(PrimitiveType.Triangles, indices.Length/100, DrawElementsType.UnsignedInt, s);
+                GL.DrawElements(PrimitiveType.Triangles, indices.Length/50, DrawElementsType.UnsignedInt, s);
        
           
-            s += 486*4;
+            s += indicesCount.Length * 4;
 
-            Thread.Sleep(50);
+            Thread.Sleep(40);
 
-            if(s > (486 * 4 * 100)){ s = 0; }
+            if(s > (indicesCount.Length * 4 * 50)){ s = 0; }
         }
 
         public void Reset()
