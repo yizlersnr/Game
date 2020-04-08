@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using OpenTK;
 
 namespace ConsoleApp2
 {
@@ -14,7 +15,9 @@ namespace ConsoleApp2
             {
                 //Run takes a double, which is how many frames per second it should strive to reach.
                 //You can leave that out and it'll just update as fast as the hardware will allow it.
-                game.Run(60.0);
+                //game.Run();
+                game.MakeCurrent();
+                game.Run();
             }
 
             
@@ -22,3 +25,4 @@ namespace ConsoleApp2
 
     }
 }
+

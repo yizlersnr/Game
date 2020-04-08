@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Reflection;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -24,20 +25,127 @@ namespace ConsoleApp2
         readonly float[] faces = new float[0];
         public float[] model = new float[0];
         private uint[] indices = new uint[0];
+
+        struct Material
+        {
+            public string _matName;
+            //readonly Vector3 Ka;
+            //readonly Vector3 Kd;
+            //readonly Vector3 Ks;
+            //readonly Vector3 Ke;
+            public Vector3 _colour;
+        };
+
+        private Material[] material = new Material[0];
+        private Material frameMaterial = new Material();
+        readonly string matName;
+        readonly Vector3 Ka = new Vector3();
+        readonly Vector3 Kd = new Vector3();
+        readonly Vector3 Ks = new Vector3();
+        readonly Vector3 Ke = new Vector3();
+        readonly Vector3 colour = new Vector3();
+        readonly int check;
+
         
 
 
         public ObjLoader(string path)
         {
+            //text = File.ReadAllText(path);
+            //if (text == null)
+            //{
+            //    Console.WriteLine("Imposible to open the file");
+            //}
+
+            
+            string matPath = path.Replace("obj", "mtl");
+            text = File.ReadAllText(matPath);
+            if (text == null)
+            {
+                Console.WriteLine("Imposible to open material file");
+            }
+
+            //else
+            //{
+            //    Console.Write("read and open");
+            //}
+
+            StreamReader materialfile = new StreamReader(matPath);
+            while ((line = materialfile.ReadLine()) != null)
+            {
+                
+                try
+                {
+                    currentLine = (line[0] + "" + line[1]).ToString();
+                }
+                catch
+                {
+                    currentLine = "";
+                }
+
+                string[] name_split = line.Split(new Char[] { ' ' });
+                if (currentLine == "ne")
+                {
+                    matName = name_split[1];
+                    check = 0;
+                }
+
+                string[] ambient_split = line.Split(new Char[] { ' ' });
+                if (currentLine == "Ka")
+                {
+                    Ka.X = (float)Convert.ToDouble(ambient_split[1]);
+                    Ka.Y = (float)Convert.ToDouble(ambient_split[2]);
+                    Ka.Z = (float)Convert.ToDouble(ambient_split[3]);
+                    check = 0;
+                }
+
+                string[] diffuse_split = line.Split(new Char[] { ' ' });
+                if (currentLine == "Kd")
+                {
+                    Kd.X = (float)Convert.ToDouble(diffuse_split[1]);
+                    Kd.Y = (float)Convert.ToDouble(diffuse_split[2]);
+                    Kd.Z = (float)Convert.ToDouble(diffuse_split[3]);
+                    check = 0;
+                }
+
+                string[] specular_split = line.Split(new Char[] { ' ' });
+                if (currentLine == "Ks")
+                {
+                    Ks.X = (float)Convert.ToDouble(specular_split[1]);
+                    Ks.Y = (float)Convert.ToDouble(specular_split[2]);
+                    Ks.Z = (float)Convert.ToDouble(specular_split[3]);
+                }
+
+                string[] emit_split = line.Split(new Char[] { ' ' });
+                if (currentLine == "Ke")
+                {
+                    Ke.X = (float)Convert.ToDouble(emit_split[1]);
+                    Ke.Y = (float)Convert.ToDouble(emit_split[2]);
+                    Ke.Z = (float)Convert.ToDouble(emit_split[3]);
+                    check = 1;
+                }
+
+                if (check == 1) {
+                    Array.Resize(ref material, material.Length + 1);
+                    colour =  Kd + Ks + Ke;
+
+                    Material mat;
+
+                    mat._matName = matName;
+                    mat._colour = colour;
+
+                    material[material.Length - 1] = mat;
+                    check = 0;
+                }
+            }
+
+
             text = File.ReadAllText(path);
             if (text == null)
             {
                 Console.WriteLine("Imposible to open the file");
             }
-            //else
-            //{
-            //    Console.Write("read and open");
-            //}
+
 
             StreamReader file = new StreamReader(path);
             while ((line = file.ReadLine()) != null)
@@ -69,6 +177,25 @@ namespace ConsoleApp2
                     normals[normals.Length - 1] = (float)Convert.ToDouble(normal_split[3]);
                 }
 
+                string[] name_split = line.Split(new Char[] { ' ' });
+                if (currentLine == "us")
+                {
+                    matName = name_split[1];
+                    check = 0;
+                    foreach( var p in material)
+                    {
+
+                        if (p._matName == matName)
+                        {
+                            frameMaterial._colour = p._colour;
+                        }
+                        var val_a = p._colour;
+                        var kip = p._matName;
+                        //Console.WriteLine(" kip " + kip + " " + val_a);
+
+                    }
+                }
+
 
                 string[] face_split = line.Split(new Char[] { ' ', '/' });
                 if (currentLine == "f ")
@@ -78,37 +205,63 @@ namespace ConsoleApp2
                     faces[faces.Length - 8] = (int)Convert.ToInt32(face_split[2]);
                     faces[faces.Length - 7] = (int)Convert.ToInt32(face_split[3]);
 
-                            Array.Resize(ref model, model.Length + 5);
-                            model[model.Length - 5] = vertices[((int)faces[faces.Length - 9] * 3) - 3];
-                            model[model.Length - 4] = vertices[((int)faces[faces.Length - 9] * 3) - 2];
-                            model[model.Length - 3] = vertices[((int)faces[faces.Length - 9] * 3) - 1];
+                            Array.Resize(ref model, model.Length + 11);
+                            model[model.Length - 11] = vertices[((int)faces[faces.Length - 9] * 3) - 3];
+                            model[model.Length - 10] = vertices[((int)faces[faces.Length - 9] * 3) - 2];
+                            model[model.Length - 9] = vertices[((int)faces[faces.Length - 9] * 3) - 1];
 
-                            model[model.Length - 2] = texture[((int)faces[faces.Length - 8] * 2) - 2];
-                            model[model.Length - 1] = texture[((int)faces[faces.Length - 8] * 2) - 1];
+                            model[model.Length - 8] = texture[((int)faces[faces.Length - 8] * 2) - 2];
+                            model[model.Length - 7] = texture[((int)faces[faces.Length - 8] * 2) - 1];
+
+                            model[model.Length - 6] = normals[((int)faces[faces.Length - 7] * 3) - 3];
+                            model[model.Length - 5] = normals[((int)faces[faces.Length - 7] * 3) - 2];
+                            model[model.Length - 4] = normals[((int)faces[faces.Length - 7] * 3) - 1];
+
+                            model[model.Length - 3] = frameMaterial._colour.X;
+                            model[model.Length - 2] = frameMaterial._colour.Y;
+                            model[model.Length - 1] = frameMaterial._colour.Z;
+                            
 
                     faces[faces.Length - 6] = (int)Convert.ToInt32(face_split[4]);
                     faces[faces.Length - 5] = (int)Convert.ToInt32(face_split[5]);
                     faces[faces.Length - 4] = (int)Convert.ToInt32(face_split[6]);
 
-                            Array.Resize(ref model, model.Length + 5);
-                            model[model.Length - 5] = vertices[((int)faces[faces.Length - 6] * 3) - 3];
-                            model[model.Length - 4] = vertices[((int)faces[faces.Length - 6] * 3) - 2];
-                            model[model.Length - 3] = vertices[((int)faces[faces.Length - 6] * 3) - 1];
+                            Array.Resize(ref model, model.Length + 11);
+                            model[model.Length - 11] = vertices[((int)faces[faces.Length - 6] * 3) - 3];
+                            model[model.Length - 10] = vertices[((int)faces[faces.Length - 6] * 3) - 2];
+                            model[model.Length - 9] = vertices[((int)faces[faces.Length - 6] * 3) - 1];
 
-                            model[model.Length - 2] = texture[((int)faces[faces.Length - 5] * 2) - 2];
-                            model[model.Length - 1] = texture[((int)faces[faces.Length - 5] * 2) - 1];
+                            model[model.Length - 8] = texture[((int)faces[faces.Length - 5] * 2) - 2];
+                            model[model.Length - 7] = texture[((int)faces[faces.Length - 5] * 2) - 1];
+
+                            model[model.Length - 6] = normals[((int)faces[faces.Length - 4] * 3) - 3];
+                            model[model.Length - 5] = normals[((int)faces[faces.Length - 4] * 3) - 2];
+                            model[model.Length - 4] = normals[((int)faces[faces.Length - 4] * 3) - 1];
+
+                            model[model.Length - 3] = frameMaterial._colour.X;
+                            model[model.Length - 2] = frameMaterial._colour.Y;
+                            model[model.Length - 1] = frameMaterial._colour.Z;
 
                     faces[faces.Length - 3] = (int)Convert.ToInt32(face_split[7]);
                     faces[faces.Length - 2] = (int)Convert.ToInt32(face_split[8]);
                     faces[faces.Length - 1] = (int)Convert.ToInt32(face_split[9]);
 
-                            Array.Resize(ref model, model.Length + 5);
-                            model[model.Length - 5] = vertices[((int)faces[faces.Length - 3] * 3) - 3];
-                            model[model.Length - 4] = vertices[((int)faces[faces.Length - 3] * 3) - 2];
-                            model[model.Length - 3] = vertices[((int)faces[faces.Length - 3] * 3) - 1];
+                            Array.Resize(ref model, model.Length + 11);
+                            model[model.Length - 11] = vertices[((int)faces[faces.Length - 3] * 3) - 3];
+                            model[model.Length - 10] = vertices[((int)faces[faces.Length - 3] * 3) - 2];
+                            model[model.Length - 9] = vertices[((int)faces[faces.Length - 3] * 3) - 1];
 
-                            model[model.Length - 2] = texture[((int)faces[faces.Length - 2] * 2) - 2];
-                            model[model.Length - 1] = texture[((int)faces[faces.Length - 2] * 2) - 1];
+                            model[model.Length - 8] = texture[((int)faces[faces.Length - 2] * 2) - 2];
+                            model[model.Length - 7] = texture[((int)faces[faces.Length - 2] * 2) - 1];
+
+                            model[model.Length - 6] = normals[((int)faces[faces.Length - 1] * 3) - 3];
+                            model[model.Length - 5] = normals[((int)faces[faces.Length - 1] * 3) - 2];
+                            model[model.Length - 4] = normals[((int)faces[faces.Length - 1] * 3) - 1];
+
+                            model[model.Length - 3] = frameMaterial._colour.X;
+                            model[model.Length - 2] = frameMaterial._colour.Y;
+                            model[model.Length - 1] = frameMaterial._colour.Z;
+
                     count++;
                 }
 

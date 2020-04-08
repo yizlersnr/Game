@@ -27,15 +27,20 @@ namespace ConsoleApp2
         private Texture texture;
         private Texture texture2;
         public float t, x, y, z;
-        public int s, icount, fcount = -1440;
+        public int s, icount, fcount;
 
         private Matrix4 view;
         private Matrix4 projection;
 
+        private Vector3 objectColor = new Vector3(1.0f, 0.0f, 0.5f); //The color of the object.
+        private Vector3 lightColor = new Vector3(1, 1, 1); //The color of the light.
+        private Vector3 lightPos = new Vector3(0,0,2);
+        private Vector3 viewPos = new Vector3(0, 0, 1);
+
         private readonly string tex;
         public string name;
 
-        public Object(string obj, string _tex, Vector3 pos, string shapeName)
+        public Object(string obj, string _tex, Vector3 pos, string shapeName, int frameCount)
         {
             ObjLoader obj1 = new ObjLoader(obj + "_000001.obj");
             vertices = obj1.Verts();
@@ -45,21 +50,25 @@ namespace ConsoleApp2
             y = pos.Y;
             z = pos.Z;
             name = shapeName;
+            fcount = frameCount;
 
 
-            frames = new float[vertices.Length * 50];
+            frames = new float[vertices.Length * fcount];
             Array.Copy(vertices, frames, vertices.Length);
-            for (s = 2; s < 50; s++)
+            for (s = 2; s < fcount; s++)
             {
                 ObjLoader objf = new ObjLoader(obj + "_" + s.ToString("D6") + ".obj");
-                Console.WriteLine("Read and opened frame "+ s.ToString());
-                vertices2 = objf.Verts();
+                Console.Write("\rRead and opened frame "+ s.ToString());
+
+               vertices2 = objf.Verts();
                 Array.Copy(vertices2, 0, frames, vertices.Length * (s), vertices2.Length);
             }
 
+            Console.WriteLine();
+
             s = 0;
 
-            icount = indicesCount.Length * 50;
+            icount = indicesCount.Length * fcount;
             indices = new uint[icount];
             for (uint x = 0; x < icount; x++) {
                 indices[x] = x;
@@ -69,6 +78,8 @@ namespace ConsoleApp2
         public void Load()
         {
             GL.Enable(EnableCap.DepthTest);
+            //GL.Enable(EnableCap.StencilTest);
+            //GL.Enable(EnableCap.Multisample);
 
             //VertexBufferObject = GL.GenBuffer();
             //GL.BindBuffer(BufferTarget.ArrayBuffer, VertexBufferObject);
@@ -96,6 +107,11 @@ namespace ConsoleApp2
             shader.SetInt("texture1", 0);
             shader.SetInt("texture2", 1);
 
+            shader.SetVector3("objectColor", objectColor);
+            shader.SetVector3("lightColor", lightColor);
+            shader.SetVector3("lightPos", lightPos);
+            shader.SetVector3("viewPos", viewPos);
+
 
             VertexArrayObject = GL.GenVertexArray();
             GL.BindVertexArray(VertexArrayObject);
@@ -107,11 +123,19 @@ namespace ConsoleApp2
 
             var vertexLocation = shader.GetAttribLocation("aPosition");
             GL.EnableVertexAttribArray(vertexLocation);
-            GL.VertexAttribPointer(vertexLocation, 3, VertexAttribPointerType.Float, false, 5 * sizeof(float), 0);
+            GL.VertexAttribPointer(vertexLocation, 3, VertexAttribPointerType.Float, false, 11 * sizeof(float), 0);
 
             var texCoordLocation = shader.GetAttribLocation("aTexCoord");
             GL.EnableVertexAttribArray(texCoordLocation);
-            GL.VertexAttribPointer(texCoordLocation, 2, VertexAttribPointerType.Float, false, 5 * sizeof(float), 3 * sizeof(float));
+            GL.VertexAttribPointer(texCoordLocation, 2, VertexAttribPointerType.Float, false, 11 * sizeof(float), 3 * sizeof(float));
+
+            var normlLocation = shader.GetAttribLocation("aNormal");
+            GL.EnableVertexAttribArray(normlLocation);
+            GL.VertexAttribPointer(normlLocation, 3, VertexAttribPointerType.Float, false, 11 * sizeof(float), 5 * sizeof(float));
+
+            var colourLocation = shader.GetAttribLocation("aColour");
+            GL.EnableVertexAttribArray(colourLocation);
+            GL.VertexAttribPointer(colourLocation, 3, VertexAttribPointerType.Float, false, 11 * sizeof(float), 8 * sizeof(float));
         }
 
         public void unload()
@@ -133,8 +157,8 @@ namespace ConsoleApp2
             shader.Use();
 
             var model = Matrix4.Identity * Matrix4.CreateRotationY(MathHelper.DegreesToRadians(t * 0.05f));
-            model *= Matrix4.CreateRotationZ(MathHelper.DegreesToRadians(t * 0.05f));
-            model *= Matrix4.CreateRotationX(MathHelper.DegreesToRadians(t * 0.05f));
+            //model *= Matrix4.CreateRotationZ(MathHelper.DegreesToRadians(t * 0.05f));
+            //model *= Matrix4.CreateRotationX(MathHelper.DegreesToRadians(t * 0.05f));
             model *= Matrix4.CreateTranslation(x * 1.0f, y * 0.5f, z * 1.0f);
 
             view = cam.GetViewMatrix();
@@ -149,14 +173,14 @@ namespace ConsoleApp2
             GL.BindVertexArray(VertexArrayObject);
             
                 
-                GL.DrawElements(PrimitiveType.Triangles, indices.Length/50, DrawElementsType.UnsignedInt, s);
+                GL.DrawElements(PrimitiveType.Triangles, indices.Length/fcount, DrawElementsType.UnsignedInt, s);
        
           
             s += indicesCount.Length * 4;
 
-            Thread.Sleep(40);
+            Thread.Sleep(200);
 
-            if(s > (indicesCount.Length * 4 * 50)){ s = 0; }
+            if(s > (indicesCount.Length * 4 * fcount)){ s = 0; }
         }
 
         public void Reset()

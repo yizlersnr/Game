@@ -84,7 +84,7 @@ namespace ConsoleApp2
             GL.BindBuffer(BufferTarget.ElementArrayBuffer, ElementBufferObject);
             GL.BufferData(BufferTarget.ElementArrayBuffer, indices.Length * sizeof(uint), indices, BufferUsageHint.StaticDraw);
 
-            shader = new Shader("shape.vert", "shape.frag");
+            shader = new Shader("shape.vert", "shape_button.frag");
             shader.Use();
 
 
