@@ -110,6 +110,19 @@ namespace ConsoleApp2
             GL.UniformMatrix4(location, true, ref data);
         }
 
+        /// <summary>
+        /// Set a uniform Vector3 on this shader.
+        /// </summary>
+        /// <param name="name">The name of the uniform</param>
+        /// <param name="data">The data to set</param>
+        public void SetVector3(string name, Vector3 data)
+        {
+            //GL.UseProgram(Handle);
+            // GL.Uniform3(_uniformLocations[name], data);
+            int location = GL.GetUniformLocation(Handle, name);
+            GL.Uniform3(location, ref data);
+        }
+
 
         // clean up the handle after this class dies //
         private bool disposedValue = false;

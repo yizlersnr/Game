@@ -32,6 +32,11 @@ namespace ConsoleApp2
         private Matrix4 view;
         private Matrix4 projection;
 
+        private Vector3 objectColor = new Vector3(1.0f, 0.0f, 0.5f); //The color of the object.
+        private Vector3 lightColor = new Vector3(1, 1, 1); //The color of the light.
+        private Vector3 lightPos = new Vector3(0,0,2);
+        private Vector3 viewPos = new Vector3(0, 0, 1);
+
         private readonly string tex;
         public string name;
 
@@ -96,6 +101,11 @@ namespace ConsoleApp2
             shader.SetInt("texture1", 0);
             shader.SetInt("texture2", 1);
 
+            shader.SetVector3("objectColor", objectColor);
+            shader.SetVector3("lightColor", lightColor);
+            shader.SetVector3("lightPos", lightPos);
+            shader.SetVector3("viewPos", viewPos);
+
 
             VertexArrayObject = GL.GenVertexArray();
             GL.BindVertexArray(VertexArrayObject);
@@ -107,11 +117,19 @@ namespace ConsoleApp2
 
             var vertexLocation = shader.GetAttribLocation("aPosition");
             GL.EnableVertexAttribArray(vertexLocation);
-            GL.VertexAttribPointer(vertexLocation, 3, VertexAttribPointerType.Float, false, 5 * sizeof(float), 0);
+            GL.VertexAttribPointer(vertexLocation, 3, VertexAttribPointerType.Float, false, 11 * sizeof(float), 0);
 
             var texCoordLocation = shader.GetAttribLocation("aTexCoord");
             GL.EnableVertexAttribArray(texCoordLocation);
-            GL.VertexAttribPointer(texCoordLocation, 2, VertexAttribPointerType.Float, false, 5 * sizeof(float), 3 * sizeof(float));
+            GL.VertexAttribPointer(texCoordLocation, 2, VertexAttribPointerType.Float, false, 11 * sizeof(float), 3 * sizeof(float));
+
+            var normlLocation = shader.GetAttribLocation("aNormal");
+            GL.EnableVertexAttribArray(normlLocation);
+            GL.VertexAttribPointer(normlLocation, 3, VertexAttribPointerType.Float, false, 11 * sizeof(float), 5 * sizeof(float));
+
+            var colourLocation = shader.GetAttribLocation("aColour");
+            GL.EnableVertexAttribArray(colourLocation);
+            GL.VertexAttribPointer(colourLocation, 3, VertexAttribPointerType.Float, false, 11 * sizeof(float), 8 * sizeof(float));
         }
 
         public void unload()
@@ -133,8 +151,8 @@ namespace ConsoleApp2
             shader.Use();
 
             var model = Matrix4.Identity * Matrix4.CreateRotationY(MathHelper.DegreesToRadians(t * 0.05f));
-            model *= Matrix4.CreateRotationZ(MathHelper.DegreesToRadians(t * 0.05f));
-            model *= Matrix4.CreateRotationX(MathHelper.DegreesToRadians(t * 0.05f));
+            //model *= Matrix4.CreateRotationZ(MathHelper.DegreesToRadians(t * 0.05f));
+            //model *= Matrix4.CreateRotationX(MathHelper.DegreesToRadians(t * 0.05f));
             model *= Matrix4.CreateTranslation(x * 1.0f, y * 0.5f, z * 1.0f);
 
             view = cam.GetViewMatrix();
@@ -154,7 +172,7 @@ namespace ConsoleApp2
           
             s += indicesCount.Length * 4;
 
-            Thread.Sleep(40);
+            Thread.Sleep(1);
 
             if(s > (indicesCount.Length * 4 * 50)){ s = 0; }
         }
