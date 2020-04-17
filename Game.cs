@@ -31,7 +31,7 @@ namespace ConsoleApp2
         private readonly Button play4 = new Button(-4.5f, 0.5f, "quit");
 
         private readonly Object[] shapes; 
-        private readonly Object shape = new Object("wave", "british-flag", new Vector3(3.5f, 0.0f, 0.0f)," s1 ", 50);
+        private readonly Object shape = new Object("car", "british-flag", new Vector3(3.5f, 0.0f, 0.0f)," s1 ");
         //private readonly Object shape2 = new Object("cube", "head2", new Vector3(1.5f, 0.0f, 0.0f)," s2 ");
 
         private Camera camera;
@@ -88,7 +88,7 @@ namespace ConsoleApp2
             //    }
             //}
 
-            shapes[c] = new Object("car", "british-flag", new Vector3(2 * 4.5f, 0.0f, 2 * 4.0f), "base " + c.ToString(), 50);
+            shapes[c] = new Object("wave", "british-flag", new Vector3(2 * 4.5f, 0.0f, 2 * 4.0f), "base " + c.ToString());
             c++;
             shapes[c] = shape; // new Object("animate", "container", new Vector3(3 * 4.5f, 0.0f, 3 * 4.0f), "ani");
 

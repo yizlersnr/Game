@@ -27,7 +27,7 @@ namespace ConsoleApp2
         private Texture texture;
         private Texture texture2;
         public float t, x, y, z;
-        public int s, icount, fcount;
+        public int s, icount, fcount = -1440;
 
         private Matrix4 view;
         private Matrix4 projection;
@@ -40,7 +40,7 @@ namespace ConsoleApp2
         private readonly string tex;
         public string name;
 
-        public Object(string obj, string _tex, Vector3 pos, string shapeName, int frameCount)
+        public Object(string obj, string _tex, Vector3 pos, string shapeName)
         {
             ObjLoader obj1 = new ObjLoader(obj + "_000001.obj");
             vertices = obj1.Verts();
@@ -50,25 +50,21 @@ namespace ConsoleApp2
             y = pos.Y;
             z = pos.Z;
             name = shapeName;
-            fcount = frameCount;
 
 
-            frames = new float[vertices.Length * fcount];
+            frames = new float[vertices.Length * 50];
             Array.Copy(vertices, frames, vertices.Length);
-            for (s = 2; s < fcount; s++)
+            for (s = 2; s < 50; s++)
             {
                 ObjLoader objf = new ObjLoader(obj + "_" + s.ToString("D6") + ".obj");
-                Console.Write("\rRead and opened frame "+ s.ToString());
-
-               vertices2 = objf.Verts();
+                Console.WriteLine("Read and opened frame "+ s.ToString());
+                vertices2 = objf.Verts();
                 Array.Copy(vertices2, 0, frames, vertices.Length * (s), vertices2.Length);
             }
 
-            Console.WriteLine();
-
             s = 0;
 
-            icount = indicesCount.Length * fcount;
+            icount = indicesCount.Length * 50;
             indices = new uint[icount];
             for (uint x = 0; x < icount; x++) {
                 indices[x] = x;
@@ -78,8 +74,6 @@ namespace ConsoleApp2
         public void Load()
         {
             GL.Enable(EnableCap.DepthTest);
-            //GL.Enable(EnableCap.StencilTest);
-            //GL.Enable(EnableCap.Multisample);
 
             //VertexBufferObject = GL.GenBuffer();
             //GL.BindBuffer(BufferTarget.ArrayBuffer, VertexBufferObject);
@@ -173,14 +167,14 @@ namespace ConsoleApp2
             GL.BindVertexArray(VertexArrayObject);
             
                 
-                GL.DrawElements(PrimitiveType.Triangles, indices.Length/fcount, DrawElementsType.UnsignedInt, s);
+                GL.DrawElements(PrimitiveType.Triangles, indices.Length/50, DrawElementsType.UnsignedInt, s);
        
           
             s += indicesCount.Length * 4;
 
-            Thread.Sleep(200);
+            Thread.Sleep(1);
 
-            if(s > (indicesCount.Length * 4 * fcount)){ s = 0; }
+            if(s > (indicesCount.Length * 4 * 50)){ s = 0; }
         }
 
         public void Reset()
