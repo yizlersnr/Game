@@ -27,12 +27,13 @@ namespace ConsoleApp2
         private readonly Button[] buttons;
         private readonly Button play1 = new Button(-4.5f, 5.0f,"play");
         private readonly Button play2 = new Button(-4.5f, 3.5f,"options");
-        private readonly Button play3 = new Button(-4.5f, 2.0f,"credits");
+        private readonly Button play3 = new Button(-4.5f, 2.0f, "credits");
         private readonly Button play4 = new Button(-4.5f, 0.5f, "quit");
 
         private readonly Object[] shapes; 
-        private readonly Object shape = new Object("car", "british-flag", new Vector3(3.5f, 0.0f, 0.0f)," s1 ");
-        //private readonly Object shape2 = new Object("cube", "head2", new Vector3(1.5f, 0.0f, 0.0f)," s2 ");
+        private readonly Object wave = new Object("wave", "british-flag", new Vector3(2 * 4.5f, 6.0f, 2 * 4.0f), "wave ", 50);
+        private readonly Object car = new Object("car", "british-flag", new Vector3(8.0f, 5.0f, 8.0f)," Car ", 51);
+        private readonly Object land = new Object("land_", "head2", new Vector3(1.5f, 0.0f, 0.0f)," s2 ", 1);
 
         private Camera camera;
         private Vector2 lastPos;
@@ -41,6 +42,7 @@ namespace ConsoleApp2
         static bool showMenu = true;
         private Vector2 PxPy;
         private Vector2 windowSize;
+        float deltaX, deltaY;
 
         private int selected;
 
@@ -53,7 +55,7 @@ namespace ConsoleApp2
         private readonly int _width, _height;
 
 
-        public Game(int width, int height, string title) : base(width, height, GraphicsMode.Default, title)
+        public Game(int width, int height, string title) : base(width, height, new GraphicsMode(32,24,0,8), title)
         {
             _width = width;
             _height = height;
@@ -62,35 +64,13 @@ namespace ConsoleApp2
 
             buttons = new Button[]{play1, play2, play3, play4};
 
-            shapes = new Object[2];
-            int c = 0;
-            //for (int f = 0; f < 2; f++)
-            //{
-            //    for (int m = 0; m < 2; m++)
-            //    {
-            //        if (c == 0)
-            //        {
-            //shapes[c] = new Object("cube", "head", new Vector3(2 * 4.5f, 0.0f, 2* 4.0f), "cube " + c.ToString());
-            //        }
-            //        if (c == 1)
-            //        {
-            //            shapes[c] = new Object("iso", "container", new Vector3(f * 4.5f, 0.0f, m * 4.0f), "box " + c.ToString());
-            //        }
-            //        if (c == 2)
-            //        {
-            //            shapes[c] = new Object("iso", "iso", new Vector3(f * 4.5f, 0.0f, m * 4.0f), "iso " + c.ToString());
-            //        }
-            //        if (c == 3)
-            //        {
-            //            shapes[c] = new Object("iso", "base", new Vector3(f * 4.5f, 0.0f, m * 4.0f), "cube " + c.ToString());
-            //        }
-            //        c++;
-            //    }
-            //}
+            shapes = new Object[3];
 
-            shapes[c] = new Object("wave", "british-flag", new Vector3(2 * 4.5f, 0.0f, 2 * 4.0f), "base " + c.ToString());
-            c++;
-            shapes[c] = shape; // new Object("animate", "container", new Vector3(3 * 4.5f, 0.0f, 3 * 4.0f), "ani");
+            shapes[1] = wave;
+            shapes[0] = land;
+            shapes[2] = car;
+      
+
 
 
         }
@@ -124,7 +104,7 @@ namespace ConsoleApp2
             //shape2.load(_width, _height);
 
 
-            camera = new Camera(new Vector3(0.0f, 0.0f, 9.0f), _width / _height)
+            camera = new Camera(new Vector3(0.0f, 7.0f, 9.0f), _width / _height, new Vector3(shapes[selected].x, shapes[selected].x, shapes[selected].x))
             {
                 Fov = 45.0f,
                 AspectRatio = _width / _height
@@ -150,6 +130,8 @@ namespace ConsoleApp2
             {
                 shape.Draw(camera);
             }
+
+           
 
             //triangle.draw();
 
@@ -203,6 +185,7 @@ namespace ConsoleApp2
                 {
                     selected++;
                     Console.WriteLine(selected);
+                    Console.WriteLine(camera.Position.X + "," + camera.Position.Y + "," + camera.Position.Z);
                 }
                 else
                 {
@@ -286,11 +269,11 @@ namespace ConsoleApp2
             // Camera
             // Keyboard
 
-            float speed = 155.0f;
+            float speed = 300.0f;
 
-            if (camera.Position.Y < 12.0f)
+            if ((camera.Position.Y < 7.0f) || (camera.Position.Y > 8.0f))
             {
-                //camera.Position += new Vector3(0.0f,12.0f,0.0f);
+                //camera.Position += new Vector3(camera.Position.X, 7.5f, camera.Position.Z);
             }
 
             if (input.IsKeyDown(Key.I))
@@ -324,6 +307,8 @@ namespace ConsoleApp2
             }
 
 
+          
+
 
             // Camera
             // Mouse
@@ -331,22 +316,23 @@ namespace ConsoleApp2
             if (firstMove)
             {
                 lastPos = new Vector2(Mouse.GetState().X, Mouse.GetState().Y);
+                lastPos = new Vector2(0, 0);
                 firstMove = false;
             }
             else
             {
-                float deltaX = Mouse.GetCursorState().X - lastPos.X;
-                float deltaY = Mouse.GetCursorState().Y - lastPos.Y;
+                deltaX = Mouse.GetCursorState().X - lastPos.X;
+                deltaY = Mouse.GetCursorState().Y - lastPos.Y;
                 lastPos = new Vector2(Mouse.GetCursorState().X, Mouse.GetCursorState().Y);
 
                 camera.Yaw += deltaX * camera.Sensitivity;
-                if (camera.Pitch > 60.0f)
+                if (camera.Pitch > 89.0f)
                 {
-                    camera.Pitch = 60.0f;
+                    camera.Pitch = 89.0f;
                 }
-                else if (camera.Pitch < -60.0f)
+                else if (camera.Pitch < -89.0f)
                 {
-                    camera.Pitch = -60.0f;
+                    camera.Pitch = -89.0f;
                 }
                 else
                 {
@@ -354,10 +340,18 @@ namespace ConsoleApp2
                 }
             }
 
-            camera._front.X = (float)Math.Cos(MathHelper.DegreesToRadians(camera.Pitch)) * (float)Math.Cos(MathHelper.DegreesToRadians(camera.Yaw));
-            camera._front.Y = (float)Math.Sin(MathHelper.DegreesToRadians(camera.Pitch));
-            camera._front.Z = (float)Math.Cos(MathHelper.DegreesToRadians(camera.Pitch)) * (float)Math.Sin(MathHelper.DegreesToRadians(camera.Yaw));
+            //camera._front.X = (float)Math.Cos(MathHelper.DegreesToRadians(camera.Pitch)) * (float)Math.Cos(MathHelper.DegreesToRadians(camera.Yaw));
+            //camera._front.Y = (float)Math.Sin(MathHelper.DegreesToRadians(camera.Pitch));
+            //camera._front.Z = (float)Math.Cos(MathHelper.DegreesToRadians(camera.Pitch)) * (float)Math.Sin(MathHelper.DegreesToRadians(camera.Yaw));
+
+            //camera._front.X = shapes[selected].x;
+            //camera._front.Y = shapes[selected].y;
+            //camera._front.Z = shapes[selected].z;
+
+
             camera._front = Vector3.Normalize(camera._front);
+
+            camera.GetViewFollowMatrix(new Vector3(shapes[selected].x, shapes[selected].y, shapes[selected].z));
 
 
 
@@ -411,7 +405,7 @@ namespace ConsoleApp2
 
         protected override void OnMouseWheel(MouseWheelEventArgs e)
         {
-            camera.Fov = Mouse.GetState().WheelPrecise;
+           // camera.Fov = Mouse.GetState().WheelPrecise;
             Console.WriteLine(camera.Fov);
             base.OnMouseWheel(e);
         }

@@ -201,7 +201,7 @@ namespace ConsoleApp2
                 {
                     case "play":
                         Console.WriteLine("Case play");
-                        GL.ClearColor(1.0f, 0.0f, 0.0f, 1.0f);
+                        GL.ClearColor(1.0f, 1.0f, 1.0f, 1.0f);
                         break;
                     case "options":
                         Console.WriteLine("Case options");

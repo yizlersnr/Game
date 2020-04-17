@@ -27,22 +27,22 @@ namespace ConsoleApp2
         private Texture texture;
         private Texture texture2;
         public float t, x, y, z;
-        public int s, icount, fcount = -1440;
+        public int s, icount, fcount;
 
         private Matrix4 view;
         private Matrix4 projection;
 
         private Vector3 objectColor = new Vector3(1.0f, 0.0f, 0.5f); //The color of the object.
         private Vector3 lightColor = new Vector3(1, 1, 1); //The color of the light.
-        private Vector3 lightPos = new Vector3(0,0,2);
+        private Vector3 lightPos = new Vector3(0,0,20);
         private Vector3 viewPos = new Vector3(0, 0, 1);
 
         private readonly string tex;
         public string name;
 
-        public Object(string obj, string _tex, Vector3 pos, string shapeName)
+        public Object(string obj, string _tex, Vector3 pos, string shapeName, int frameCount)
         {
-            ObjLoader obj1 = new ObjLoader(obj + "_000001.obj");
+            ObjLoader obj1 = new ObjLoader(obj + "_000000.obj");
             vertices = obj1.Verts();
             indicesCount = obj1.index();
             tex = _tex;
@@ -50,21 +50,23 @@ namespace ConsoleApp2
             y = pos.Y;
             z = pos.Z;
             name = shapeName;
+            fcount = frameCount;
 
 
-            frames = new float[vertices.Length * 50];
+            frames = new float[vertices.Length * fcount];
             Array.Copy(vertices, frames, vertices.Length);
-            for (s = 2; s < 50; s++)
+            for (s = 1; s < fcount; s++)
             {
                 ObjLoader objf = new ObjLoader(obj + "_" + s.ToString("D6") + ".obj");
-                Console.WriteLine("Read and opened frame "+ s.ToString());
+                Console.Write("\rRead and opened frame "+ s.ToString());
                 vertices2 = objf.Verts();
                 Array.Copy(vertices2, 0, frames, vertices.Length * (s), vertices2.Length);
             }
+            Console.WriteLine();
 
             s = 0;
 
-            icount = indicesCount.Length * 50;
+            icount = indicesCount.Length * fcount;
             indices = new uint[icount];
             for (uint x = 0; x < icount; x++) {
                 indices[x] = x;
@@ -143,19 +145,20 @@ namespace ConsoleApp2
 
         public void Draw(Camera cam)
         {
-            t += 21;
+            t = 1;
 
 
             texture.Use(TextureUnit.Texture0);
             texture2.Use(TextureUnit.Texture1);
             shader.Use();
 
-            var model = Matrix4.Identity * Matrix4.CreateRotationY(MathHelper.DegreesToRadians(t * 0.05f));
+            var model = Matrix4.Identity * Matrix4.CreateRotationY(MathHelper.DegreesToRadians(t * 0.0005f));
             //model *= Matrix4.CreateRotationZ(MathHelper.DegreesToRadians(t * 0.05f));
             //model *= Matrix4.CreateRotationX(MathHelper.DegreesToRadians(t * 0.05f));
-            model *= Matrix4.CreateTranslation(x * 1.0f, y * 0.5f, z * 1.0f);
+            model *= Matrix4.CreateTranslation(x * 1.0f, y * 1.0f, z * 1.0f);
 
-            view = cam.GetViewMatrix();
+            view = cam.GetViewFollowMatrix(cam.Follow);
+ 
             projection = Matrix4.CreatePerspectiveFieldOfView(MathHelper.DegreesToRadians(cam.Fov), cam.AspectRatio, 0.1f, 5000.0f);
 
 
@@ -165,16 +168,25 @@ namespace ConsoleApp2
 
 
             GL.BindVertexArray(VertexArrayObject);
-            
+
+            if (fcount == 1)
+            {
+                GL.DrawElements(PrimitiveType.Triangles, indices.Length / fcount , DrawElementsType.UnsignedInt,0);
+            }
+            else
+            {
                 
-                GL.DrawElements(PrimitiveType.Triangles, indices.Length/50, DrawElementsType.UnsignedInt, s);
-       
-          
-            s += indicesCount.Length * 4;
+                if (s >= (indicesCount.Length * 4 * fcount )) { s = indicesCount.Length * 4; }
 
-            Thread.Sleep(1);
+                GL.DrawElements(PrimitiveType.Triangles, indices.Length / fcount, DrawElementsType.UnsignedInt, s);
 
-            if(s > (indicesCount.Length * 4 * 50)){ s = 0; }
+                s += indicesCount.Length * 4;
+
+                Console.WriteLine("frame : " + s/ (indicesCount.Length * 4) + " s : " + s);
+                Thread.Sleep(100);
+                
+            }
+
         }
 
         public void Reset()
@@ -185,22 +197,22 @@ namespace ConsoleApp2
 
         public void left()
         {
-            x-=0.1f;
+            x-=1f;
         }
 
         public void right()
         {
-            x+=0.1f;
+            x+=1f;
         }
 
         public void forward()
         {
-            z -= 0.1f;
+            z -= 1f;
         }
 
         public void backward()
         {
-            z += 0.1f;
+            z += 1f;
         }
 
         public void move(float x)

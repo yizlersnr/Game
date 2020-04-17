@@ -21,7 +21,7 @@ namespace ConsoleApp2
         public Vector3 _front = -Vector3.UnitZ;
         public Vector3 _up = Vector3.UnitY;
         public Vector3 _right = Vector3.UnitX;
-        public float Sensitivity = 0.1f;
+        public float Sensitivity = 0.01f;
                       
 
         // Rotation around the X axis (radians)
@@ -33,14 +33,18 @@ namespace ConsoleApp2
         // The field of view of the camera (radians)
         public float _fov = MathHelper.PiOver2;
 
-        public Camera(Vector3 position, float aspectRatio)
+        public Camera(Vector3 position, float aspectRatio, Vector3 follow)
         {
             Position = position;
             AspectRatio = aspectRatio;
+            Follow = follow;
         }
 
         // The position of the camera
         public Vector3 Position { get; set; }
+
+        // The position of the camera
+        public Vector3 Follow { get; set; }
 
         // This is simply the aspect ratio of the viewport, used for the projection matrix
         public float AspectRatio { get; set; }
@@ -60,7 +64,7 @@ namespace ConsoleApp2
                 // We clamp the pitch value between -89 and 89 to prevent the camera from going upside down, and a bunch
                 // of weird "bugs" when you are using euler angles for rotation.
                 // If you want to read more about this you can try researching a topic called gimbal lock
-                var angle = MathHelper.Clamp(value, -89f, 89f);
+                var angle = MathHelper.Clamp(value, -59f, 59f);
                 _pitch = MathHelper.DegreesToRadians(angle);
                 UpdateVectors();
             }
@@ -94,6 +98,12 @@ namespace ConsoleApp2
         public Matrix4 GetViewMatrix()
         {
             return Matrix4.LookAt(Position, Position + _front, _up);
+        }
+
+        public Matrix4 GetViewFollowMatrix(Vector3 follow)
+        {
+            Follow = follow;
+            return Matrix4.LookAt(new Vector3(1.0f, 5.0f, 0.5f), Follow, _up);
         }
 
         // Get the projection matrix using the same method we have used up until this point
