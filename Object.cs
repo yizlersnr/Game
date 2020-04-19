@@ -27,7 +27,7 @@ namespace ConsoleApp2
         private Texture texture;
         private Texture texture2;
         public float t, x, y, z;
-        public int s, icount, fcount;
+        public int f, s, icount, fcount;
 
         private Matrix4 view;
         private Matrix4 projection;
@@ -55,7 +55,7 @@ namespace ConsoleApp2
 
             frames = new float[vertices.Length * fcount];
             Array.Copy(vertices, frames, vertices.Length);
-            for (s = 2; s < fcount; s++)
+            for (s = 0; s < fcount; s++)
             {
                 ObjLoader objf = new ObjLoader(obj + "_" + s.ToString("D6") + ".obj");
                 Console.Write("\rRead and opened frame "+ s.ToString());
@@ -67,6 +67,7 @@ namespace ConsoleApp2
             Console.WriteLine();
 
             s = 0;
+            f = 0;
 
             icount = indicesCount.Length * fcount;
             indices = new uint[icount];
@@ -171,16 +172,16 @@ namespace ConsoleApp2
 
 
             GL.BindVertexArray(VertexArrayObject);
-            
-                
-                GL.DrawElements(PrimitiveType.Triangles, indices.Length/fcount, DrawElementsType.UnsignedInt, s);
-       
+
+
+            if (f == (indicesCount.Length * 4 * fcount)) { f = 0; }
+
+                 GL.DrawElements(PrimitiveType.Triangles, indices.Length/fcount, DrawElementsType.UnsignedInt, f);
           
-            s += indicesCount.Length * 4;
+            f += indicesCount.Length * 4;
 
-            Thread.Sleep(200);
+            Thread.Sleep(20);
 
-            if(s > (indicesCount.Length * 4 * fcount)){ s = 0; }
         }
 
         public void Reset()
